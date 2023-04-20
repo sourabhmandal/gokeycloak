@@ -4,7 +4,6 @@ package gokeycloak
 import (
 	"context"
 	"encoding/base64"
-	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -83,40 +82,7 @@ func (g *GoKeycloak) GetRequestWithBasicAuth(ctx context.Context, clientID, clie
 	return req
 }
 
-func checkForError(resp *resty.Response, err error, errMessage string) error {
-	if err != nil {
-		return &APIError{
-			Code:    0,
-			Message: errors.Wrap(err, errMessage).Error(),
-			Type:    ParseAPIErrType(err),
-		}
-	}
 
-	if resp == nil {
-		return &APIError{
-			Message: "empty response",
-			Type:    ParseAPIErrType(err),
-		}
-	}
-
-	if resp.IsError() {
-		var msg string
-
-		if e, ok := resp.Error().(*HTTPErrorResponse); ok && e.NotEmpty() {
-			msg = fmt.Sprintf("%s: %s", resp.Status(), e)
-		} else {
-			msg = resp.Status()
-		}
-
-		return &APIError{
-			Code:    resp.StatusCode(),
-			Message: msg,
-			Type:    ParseAPIErrType(err),
-		}
-	}
-
-	return nil
-}
 
 func getID(resp *resty.Response) string {
 	header := resp.Header().Get("Location")
@@ -253,19 +219,21 @@ func (g *GoKeycloak) CreateComponent(ctx context.Context, token, realm string, c
 }
 
 // CreateClient creates the given g.
-func (g *GoKeycloak) CreateClient(ctx context.Context, clientInitialAccessToken, realm string, newClient Client) (string, error) {
+func (g *GoKeycloak) CreateClient(ctx context.Context, clientInitialAccessToken, realm string, newClient Client) (CreateClientResponse, error) {
 	const errMessage = "could not create client"
+
+	var result CreateClientResponse
 
 	// create a client
 	resp, err := g.GetRequestWithBearerAuth(ctx, clientInitialAccessToken).
-		SetBody(newClient).
-		Post(g.getAdminRealmURL(realm, "clients"))
+		SetBody(newClient).SetResult(&result).
+		Post(g.getRealmURL(realm, "clients-registrations", "openid-connect"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return "", err
+		return result, err
 	}
 
-	return getID(resp), nil
+	return result, nil
 }
 
 // CreateClientRepresentation creates a new client representation
@@ -1416,24 +1384,23 @@ func (g *GoKeycloak) DeleteClientScopesScopeMappingsClientRoles(ctx context.Cont
 
 
 
-func (g *GoKeycloak) GenerateClientInitialAccessToken(ctx context.Context, realm string, adminAccessToken string, requestBody *ClientInitialAccessTokenRequest) error {
+func (g *GoKeycloak) GenerateClientInitialAccessToken(ctx context.Context, realm string, adminAccessToken string, requestBody ClientInitialAccessTokenRequest) (ClientInitialAccessTokenResponse, error) {
 	const errMessage = "could not generate client initial access token"
 
-	var request *ClientInitialAccessTokenRequest = requestBody
+	var request ClientInitialAccessTokenRequest = requestBody	
 
-	if(request.Count < 1) {
+	if request.Count < 1 {
 		request.Count = 1
 	}
-	if(request.Expiration < time.Now().Add(time.Minute).Second()){
-		request.Expiration = time.Now().Add(time.Minute * 5).Second()
+	if request.Expiration < int(time.Minute.Seconds()) {
+		request.Expiration = int(time.Minute.Seconds()* 5)
 	}
 
-	var result *ClientInitialAccessTokenResponse
-
+	var result ClientInitialAccessTokenResponse
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, adminAccessToken).
-	SetBody(request).
-	SetResult(&result).
-	Post(	g.getRealmURL(realm, "clients-initial-access"))
-	return checkForError(resp, err, errMessage)
+		SetResult(&result).		
+		SetBody(request).
+		Post(g.getAdminRealmURL(realm, "clients-initial-access"))
+	return result, checkForError(resp, err, errMessage)
 }

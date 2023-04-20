@@ -2,8 +2,11 @@ package gokeycloak
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/opentracing/opentracing-go"
+	"github.com/pkg/errors"
 )
 
 type contextKey string
@@ -148,4 +151,39 @@ func NilOrEmptySlice(value *[]string) bool {
 // WithTracer generates a context that has a tracer attached
 func WithTracer(ctx context.Context, tracer opentracing.Tracer) context.Context {
 	return context.WithValue(ctx, tracerContextKey, tracer)
+}
+
+func checkForError(resp *resty.Response, err error, errMessage string) error {
+	if err != nil {
+		return &APIError{
+			Code:    0,
+			Message: errors.Wrap(err, errMessage).Error(),
+			Type:    ParseAPIErrType(err),
+		}
+	}
+
+	if resp == nil {
+		return &APIError{
+			Message: "empty response",
+			Type:    ParseAPIErrType(err),
+		}
+	}
+
+	if resp.IsError() {
+		var msg string
+
+		if e, ok := resp.Error().(*HTTPErrorResponse); ok && e.NotEmpty() {
+			msg = fmt.Sprintf("%s: %s", resp.Status(), e)
+		} else {
+			msg = resp.Status()
+		}
+
+		return &APIError{
+			Code:    resp.StatusCode(),
+			Message: msg,
+			Type:    ParseAPIErrType(err),
+		}
+	}
+
+	return nil
 }
