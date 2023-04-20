@@ -4,9 +4,9 @@ import (
 	"context"
 	"io"
 
-	"github.com/Nerzal/gocloak/v13/pkg/jwx"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/segmentio/ksuid"
+	"github.com/sourabhmandal/gokeycloak/v1/pkg/jwx"
 )
 
 // LoginAdmin performs a login with Admin client

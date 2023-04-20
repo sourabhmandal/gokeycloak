@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Nerzal/gocloak/v13"
+	gocloak "github.com/sourabhmandal/gokeycloak/v1"
 	"github.com/stretchr/testify/require"
 )
 
