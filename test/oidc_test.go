@@ -29,7 +29,6 @@ func Test_GetUserInfo(t *testing.T) {
 	require.Error(t, err, "")
 }
 
-
 func Test_GetRawUserInfo(t *testing.T) {
 	t.Parallel()
 	cfg := GetConfig(t)

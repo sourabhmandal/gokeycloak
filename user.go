@@ -260,7 +260,6 @@ func (g *GoCloak) AddClientRoleToUser(ctx context.Context, token, realm, idOfCli
 	return g.AddClientRolesToUser(ctx, token, realm, idOfClient, userID, roles)
 }
 
-
 // DeleteClientRolesFromUser adds client-level role mappings
 func (g *GoCloak) DeleteClientRolesFromUser(ctx context.Context, token, realm, idOfClient, userID string, roles []Role) error {
 	const errMessage = "could not delete client role from user"
@@ -278,7 +277,6 @@ func (g *GoCloak) DeleteClientRolesFromUser(ctx context.Context, token, realm, i
 func (g *GoCloak) DeleteClientRoleFromUser(ctx context.Context, token, realm, idOfClient, userID string, roles []Role) error {
 	return g.DeleteClientRolesFromUser(ctx, token, realm, idOfClient, userID, roles)
 }
-
 
 // GetUserFederatedIdentities gets all user federated identities
 func (g *GoCloak) GetUserFederatedIdentities(ctx context.Context, token, realm, userID string) ([]*FederatedIdentityRepresentation, error) {

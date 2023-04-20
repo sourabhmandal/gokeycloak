@@ -9,12 +9,13 @@ import (
 )
 
 func (g *GoCloak) getRequestingParty(ctx context.Context, token, realm string, options RequestingPartyTokenOptions, res interface{}) (*resty.Response, error) {
-  return g.GetRequestWithBearerAuth(ctx, token).
-  SetFormData(options.FormData()).
-  SetFormDataFromValues(url.Values{"permission": PStringSlice(options.Permissions)}).
-  SetResult(&res).
-  Post(g.getRealmURL(realm, g.Config.openIDConnect, "token"))
+	return g.GetRequestWithBearerAuth(ctx, token).
+		SetFormData(options.FormData()).
+		SetFormDataFromValues(url.Values{"permission": PStringSlice(options.Permissions)}).
+		SetResult(&res).
+		Post(g.getRealmURL(realm, g.Config.openIDConnect, "token"))
 }
+
 // URL: {{keycloak_url}}/realms/{{realm}}/protocol/openid-connect/token
 // GetRequestingPartyToken returns a requesting party token with permissions granted by the server
 func (g *GoCloak) GetRequestingPartyToken(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*JWT, error) {
@@ -29,7 +30,6 @@ func (g *GoCloak) GetRequestingPartyToken(ctx context.Context, token, realm stri
 
 	return &res, nil
 }
-
 
 // GetRequestingPartyPermissions returns a requesting party permissions granted by the server
 func (g *GoCloak) GetRequestingPartyPermissions(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*[]RequestingPartyPermission, error) {
@@ -62,7 +62,6 @@ func (g *GoCloak) GetRequestingPartyPermissionDecision(ctx context.Context, toke
 
 	return &res, nil
 }
-
 
 // -----------
 // Realm Roles

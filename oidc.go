@@ -15,7 +15,6 @@ func SetOpenIDConnectEndpoint(url string) func(g *GoCloak) {
 	}
 }
 
-
 // // SetRevokeEndpoint sets the revoke endpoint
 // func (g *GoCloak) GetRevokeEndpoint() string {
 // 	return g.Config.openIDConnect + "revoke"
@@ -25,7 +24,6 @@ func SetOpenIDConnectEndpoint(url string) func(g *GoCloak) {
 // func (g *GoCloak) GetLogoutEndpoint() string {
 // 	return g.Config.openIDConnect + "logout"
 // }
-
 
 //----------------------------------------------------------------------------------
 //													REALM CERTIFICATES
@@ -109,7 +107,6 @@ func (g *GoCloak) GetRawUserInfo(ctx context.Context, accessToken, realm string)
 
 	return result, nil
 }
-
 
 //----------------------------------------------------------------------------------
 //																TOKEN

@@ -190,7 +190,6 @@ func (g *GoCloak) GetGroupMembers(ctx context.Context, token, realm, groupID str
 	return result, nil
 }
 
-
 // AddClientRolesToGroup adds a client role to the group
 func (g *GoCloak) AddClientRolesToGroup(ctx context.Context, token, realm, idOfClient, groupID string, roles []Role) error {
 	const errMessage = "could not add client role to group"
@@ -208,7 +207,6 @@ func (g *GoCloak) AddClientRolesToGroup(ctx context.Context, token, realm, idOfC
 func (g *GoCloak) AddClientRoleToGroup(ctx context.Context, token, realm, idOfClient, groupID string, roles []Role) error {
 	return g.AddClientRolesToGroup(ctx, token, realm, idOfClient, groupID, roles)
 }
-
 
 // DeleteClientRoleFromGroup removes a client role from from the group
 func (g *GoCloak) DeleteClientRoleFromGroup(ctx context.Context, token, realm, idOfClient, groupID string, roles []Role) error {

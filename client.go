@@ -83,7 +83,6 @@ func (g *GoCloak) GetRequestWithBasicAuth(ctx context.Context, clientID, clientS
 	return req
 }
 
-
 func checkForError(resp *resty.Response, err error, errMessage string) error {
 	if err != nil {
 		return &APIError{
@@ -1213,7 +1212,6 @@ func (g *GoCloak) DeleteClientRoleComposite(ctx context.Context, token, realm, r
 
 	return checkForError(resp, err, errMessage)
 }
-
 
 // GetClientScopesScopeMappingsRealmRolesAvailable returns realm-level roles that are available to attach to this client scope
 func (g *GoCloak) GetClientScopesScopeMappingsRealmRolesAvailable(ctx context.Context, token, realm, clientScopeID string) ([]*Role, error) {

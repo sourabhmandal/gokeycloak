@@ -98,7 +98,6 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 
 }
 
-
 func GetConfig(t testing.TB) *Config {
 	configOnce.Do(func() {
 		rand.Seed(time.Now().UTC().UnixNano())

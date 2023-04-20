@@ -836,7 +836,6 @@ func Test_LoginOtp(t *testing.T) {
 	require.NoError(t, err, "Login failed")
 }
 
-
 func Test_GetRequestingPartyToken(t *testing.T) {
 	cfg := GetConfig(t)
 	client := NewClientWithDebug(t)
@@ -2271,8 +2270,6 @@ func Test_SendVerifyEmail(t *testing.T) {
 		require.NoError(t, err, "ExecuteActionsEmail failed")
 	}
 }
-
-
 
 func Test_RevokeUserConsents(t *testing.T) {
 	t.Parallel()

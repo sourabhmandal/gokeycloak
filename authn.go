@@ -19,7 +19,6 @@ func (g *GoCloak) LoginAdmin(ctx context.Context, username, password, realm stri
 	})
 }
 
-
 // LoginClient performs a login with client credentials
 func (g *GoCloak) LoginClient(ctx context.Context, clientID, clientSecret, realm string) (*JWT, error) {
 	return g.GetToken(ctx, realm, TokenOptions{
@@ -27,7 +26,7 @@ func (g *GoCloak) LoginClient(ctx context.Context, clientID, clientSecret, realm
 		ClientSecret: &clientSecret,
 		GrantType:    StringP("client_credentials"),
 	})
-} 
+}
 
 // LoginClientTokenExchange will exchange the presented token for a user's token
 // Requires Token-Exchange is enabled: https://www.keycloak.org/docs/latest/securing_apps/index.html#_token-exchange
@@ -100,7 +99,6 @@ func (g *GoCloak) LoginOtp(ctx context.Context, clientID, clientSecret, realm, u
 		Totp:         &totp,
 	})
 }
-
 
 // GetAuthenticationFlows get all authentication flows from a realm
 func (g *GoCloak) GetAuthenticationFlows(ctx context.Context, token, realm string) ([]*AuthenticationFlowRepresentation, error) {
@@ -213,8 +211,6 @@ func (g *GoCloak) CreateAuthenticationExecutionFlow(ctx context.Context, token, 
 
 	return checkForError(resp, err, errMessage)
 }
-
-
 
 // ------------------
 // Identity Providers
