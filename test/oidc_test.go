@@ -1,10 +1,10 @@
-package gocloak_test
+package gokeycloak_test
 
 import (
 	"context"
 	"testing"
 
-	gocloak "github.com/sourabhmandal/gokeycloak/v1"
+	"github.com/sourabhmandal/gokeycloak"
 	"github.com/stretchr/testify/require"
 )
 
@@ -17,7 +17,7 @@ func Test_GetUserInfo(t *testing.T) {
 	userInfo, err := client.GetUserInfo(
 		context.Background(),
 		token.AccessToken,
-		cfg.GoCloak.Realm,
+		cfg.GoKeycloak.Realm,
 	)
 	require.NoError(t, err, "Failed to fetch userinfo")
 	t.Log(userInfo)
@@ -25,7 +25,7 @@ func Test_GetUserInfo(t *testing.T) {
 	_, err = client.GetUserInfo(
 		context.Background(),
 		token.AccessToken,
-		cfg.GoCloak.Realm)
+		cfg.GoKeycloak.Realm)
 	require.Error(t, err, "")
 }
 
@@ -38,7 +38,7 @@ func Test_GetRawUserInfo(t *testing.T) {
 	userInfo, err := client.GetUserInfo(
 		context.Background(),
 		token.AccessToken,
-		cfg.GoCloak.Realm,
+		cfg.GoKeycloak.Realm,
 	)
 	require.NoError(t, err, "Failed to fetch userinfo")
 	t.Log(userInfo)
@@ -52,13 +52,13 @@ func Test_GetToken(t *testing.T) {
 	SetUpTestUser(t, client)
 	newToken, err := client.GetToken(
 		context.Background(),
-		cfg.GoCloak.Realm,
-		gocloak.TokenOptions{
-			ClientID:      &cfg.GoCloak.ClientID,
-			ClientSecret:  &cfg.GoCloak.ClientSecret,
-			Username:      &cfg.GoCloak.UserName,
-			Password:      &cfg.GoCloak.Password,
-			GrantType:     gocloak.StringP("password"),
+		cfg.GoKeycloak.Realm,
+		gokeycloak.TokenOptions{
+			ClientID:      &cfg.GoKeycloak.ClientID,
+			ClientSecret:  &cfg.GoKeycloak.ClientSecret,
+			Username:      &cfg.GoKeycloak.UserName,
+			Password:      &cfg.GoKeycloak.Password,
+			GrantType:     gokeycloak.StringP("password"),
 			ResponseTypes: &[]string{"token", "id_token"},
 			Scopes:        &[]string{"openid", "offline_access"},
 		},
@@ -69,32 +69,32 @@ func Test_GetToken(t *testing.T) {
 	require.NotEmpty(t, newToken.IDToken, "Got an empty if token")
 }
 
-func GetClientToken(t *testing.T, client *gocloak.GoCloak) *gocloak.JWT {
+func GetClientToken(t *testing.T, client *gokeycloak.GoKeycloak) *gokeycloak.JWT {
 	cfg := GetConfig(t)
 	token, err := client.LoginClient(
 		context.Background(),
-		cfg.GoCloak.ClientID,
-		cfg.GoCloak.ClientSecret,
-		cfg.GoCloak.Realm)
+		cfg.GoKeycloak.ClientID,
+		cfg.GoKeycloak.ClientSecret,
+		cfg.GoKeycloak.Realm)
 	require.NoError(t, err, "Login failed")
 	return token
 }
 
-func GetUserToken(t *testing.T, client *gocloak.GoCloak) *gocloak.JWT {
+func GetUserToken(t *testing.T, client *gokeycloak.GoKeycloak) *gokeycloak.JWT {
 	SetUpTestUser(t, client)
 	cfg := GetConfig(t)
 	token, err := client.Login(
 		context.Background(),
-		cfg.GoCloak.ClientID,
-		cfg.GoCloak.ClientSecret,
-		cfg.GoCloak.Realm,
-		cfg.GoCloak.UserName,
-		cfg.GoCloak.Password)
+		cfg.GoKeycloak.ClientID,
+		cfg.GoKeycloak.ClientSecret,
+		cfg.GoKeycloak.Realm,
+		cfg.GoKeycloak.UserName,
+		cfg.GoKeycloak.Password)
 	require.NoError(t, err, "Login failed")
 	return token
 }
 
-func GetAdminToken(t testing.TB, client *gocloak.GoCloak) *gocloak.JWT {
+func GetAdminToken(t testing.TB, client *gokeycloak.GoKeycloak) *gokeycloak.JWT {
 	cfg := GetConfig(t)
 	token, err := client.LoginAdmin(
 		context.Background(),
@@ -113,9 +113,9 @@ func Test_RevokeToken(t *testing.T) {
 	token := GetUserToken(t, client)
 	err := client.RevokeToken(
 		context.Background(),
-		cfg.GoCloak.Realm,
-		cfg.GoCloak.ClientID,
-		cfg.GoCloak.ClientSecret,
+		cfg.GoKeycloak.Realm,
+		cfg.GoKeycloak.ClientID,
+		cfg.GoKeycloak.ClientSecret,
 		token.RefreshToken,
 	)
 	require.NoError(t, err, "Revoke failed")
@@ -128,19 +128,19 @@ func Test_RetrospectRequestingPartyToken(t *testing.T) {
 	SetUpTestUser(t, client)
 	token, err := client.Login(
 		context.Background(),
-		cfg.GoCloak.ClientID,
-		cfg.GoCloak.ClientSecret,
-		cfg.GoCloak.Realm,
-		cfg.GoCloak.UserName,
-		cfg.GoCloak.Password)
+		cfg.GoKeycloak.ClientID,
+		cfg.GoKeycloak.ClientSecret,
+		cfg.GoKeycloak.Realm,
+		cfg.GoKeycloak.UserName,
+		cfg.GoKeycloak.Password)
 	require.NoError(t, err, "login failed")
 
 	rpt, err := client.GetRequestingPartyToken(
 		context.Background(),
 		token.AccessToken,
-		cfg.GoCloak.Realm,
-		gocloak.RequestingPartyTokenOptions{
-			Audience: gocloak.StringP(cfg.GoCloak.ClientID),
+		cfg.GoKeycloak.Realm,
+		gokeycloak.RequestingPartyTokenOptions{
+			Audience: gokeycloak.StringP(cfg.GoKeycloak.ClientID),
 			Permissions: &[]string{
 				"Fake Resource",
 			},
@@ -151,9 +151,9 @@ func Test_RetrospectRequestingPartyToken(t *testing.T) {
 	rpt, err = client.GetRequestingPartyToken(
 		context.Background(),
 		token.AccessToken,
-		cfg.GoCloak.Realm,
-		gocloak.RequestingPartyTokenOptions{
-			Audience: gocloak.StringP(cfg.GoCloak.ClientID),
+		cfg.GoKeycloak.Realm,
+		gokeycloak.RequestingPartyTokenOptions{
+			Audience: gokeycloak.StringP(cfg.GoKeycloak.ClientID),
 			Permissions: &[]string{
 				"Default Resource",
 			},
@@ -164,13 +164,13 @@ func Test_RetrospectRequestingPartyToken(t *testing.T) {
 	rptResult, err := client.IntrospectToken(
 		context.Background(),
 		rpt.AccessToken,
-		cfg.GoCloak.ClientID,
-		cfg.GoCloak.ClientSecret,
-		cfg.GoCloak.Realm,
+		cfg.GoKeycloak.ClientID,
+		cfg.GoKeycloak.ClientSecret,
+		cfg.GoKeycloak.Realm,
 	)
 	t.Log(rptResult)
 	require.NoError(t, err, "inspection failed")
-	require.True(t, gocloak.PBool(rptResult.Active), "Inactive Token oO")
+	require.True(t, gokeycloak.PBool(rptResult.Active), "Inactive Token oO")
 	require.NotNil(t, *rptResult.Permissions)
 	permissions := *rptResult.Permissions
 	require.Len(t, permissions, 1, "GetRequestingPartyToken failed")
@@ -205,9 +205,9 @@ func Test_Logout(t *testing.T) {
 
 	err := client.Logout(
 		context.Background(),
-		cfg.GoCloak.ClientID,
-		cfg.GoCloak.ClientSecret,
-		cfg.GoCloak.Realm,
+		cfg.GoKeycloak.ClientID,
+		cfg.GoKeycloak.ClientSecret,
+		cfg.GoKeycloak.Realm,
 		token.RefreshToken)
 	require.NoError(t, err, "Logout failed")
 }

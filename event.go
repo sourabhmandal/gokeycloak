@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 )
 
 // GetEvents returns events
-func (g *GoCloak) GetEvents(ctx context.Context, token string, realm string, params GetEventsParams) ([]*EventRepresentation, error) {
+func (g *GoKeycloak) GetEvents(ctx context.Context, token string, realm string, params GetEventsParams) ([]*EventRepresentation, error) {
 	const errMessage = "could not get events"
 
 	queryParams, err := GetQueryParams(params)

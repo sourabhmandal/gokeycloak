@@ -1,3 +1,3 @@
-package gocloak
+package gokeycloak
 
 // -- NIL --

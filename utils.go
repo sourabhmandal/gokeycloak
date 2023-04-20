@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import (
 	"context"

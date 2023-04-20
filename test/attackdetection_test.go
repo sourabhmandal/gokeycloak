@@ -1,10 +1,10 @@
-package gocloak_test
+package gokeycloak_test
 
 import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	gocloak "github.com/sourabhmandal/gokeycloak/v1"
+	"github.com/sourabhmandal/gokeycloak"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,13 +24,13 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 	realm, err := client.GetRealm(
 		context.Background(),
 		token.AccessToken,
-		cfg.GoCloak.Realm)
+		cfg.GoKeycloak.Realm)
 	require.NoError(t, err, "GetRealm failed")
 
 	updatedRealm := realm
-	updatedRealm.BruteForceProtected = gocloak.BoolP(true)
-	updatedRealm.FailureFactor = gocloak.IntP(1)
-	updatedRealm.MaxFailureWaitSeconds = gocloak.IntP(2)
+	updatedRealm.BruteForceProtected = gokeycloak.BoolP(true)
+	updatedRealm.FailureFactor = gokeycloak.IntP(1)
+	updatedRealm.MaxFailureWaitSeconds = gokeycloak.IntP(2)
 	err = client.UpdateRealm(
 		context.Background(),
 		token.AccessToken,
@@ -44,20 +44,20 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 		token.AccessToken,
 		userID,
 		*realm.ID,
-		cfg.GoCloak.Password,
+		cfg.GoKeycloak.Password,
 		false)
 	require.NoError(t, err, "CreateUser failed")
 
 	fetchedUser, err := client.GetUserByID(
 		context.Background(),
 		token.AccessToken,
-		cfg.GoCloak.Realm,
+		cfg.GoKeycloak.Realm,
 		userID)
 	require.NoError(t, err, "GetUserById failed")
 
 	_, err = client.Login(context.Background(),
-		cfg.GoCloak.ClientID,
-		cfg.GoCloak.ClientSecret,
+		cfg.GoKeycloak.ClientID,
+		cfg.GoKeycloak.ClientSecret,
 		*realm.ID,
 		*fetchedUser.Username,
 		"wrong password")
@@ -65,7 +65,7 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 	bruteForceStatus, err := client.GetUserBruteForceDetectionStatus(
 		context.Background(),
 		token.AccessToken,
-		cfg.GoCloak.Realm,
+		cfg.GoKeycloak.Realm,
 		userID)
 	require.NoError(t, err, "Getting attack log failed")
 	require.Equal(t, 1, *bruteForceStatus.NumFailures, "Should return one failure")
@@ -74,17 +74,17 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 	time.Sleep(2 * time.Second)
 	_, err = client.Login(
 		context.Background(),
-		cfg.GoCloak.ClientID,
-		cfg.GoCloak.ClientSecret,
+		cfg.GoKeycloak.ClientID,
+		cfg.GoKeycloak.ClientSecret,
 		*realm.ID,
 		*fetchedUser.Username,
-		cfg.GoCloak.Password)
+		cfg.GoKeycloak.Password)
 	require.NoError(t, err, "Login failed")
 
 	bruteForceStatus, err = client.GetUserBruteForceDetectionStatus(
 		context.Background(),
 		token.AccessToken,
-		cfg.GoCloak.Realm,
+		cfg.GoKeycloak.Realm,
 		userID)
 	require.NoError(t, err, "Getting attack status failed")
 	require.Equal(t, 0, *bruteForceStatus.NumFailures, "Should return zero failures")
@@ -100,7 +100,7 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 
 func GetConfig(t testing.TB) *Config {
 	configOnce.Do(func() {
-		rand.Seed(time.Now().UTC().UnixNano())
+		rand.NewSource(time.Now().UTC().UnixNano())
 		configFileName, ok := os.LookupEnv("GOCLOAK_TEST_CONFIG")
 		if !ok {
 			configFileName = filepath.Join("testdata", "config.json")
@@ -111,7 +111,7 @@ func GetConfig(t testing.TB) *Config {
 			err := configFile.Close()
 			require.NoError(t, err, "cannot close config file")
 		}()
-		data, err := ioutil.ReadAll(configFile)
+		data, err := io.ReadAll(configFile)
 		require.NoError(t, err, "cannot read config.json")
 		config = &Config{}
 		err = json.Unmarshal(data, config)
@@ -122,8 +122,8 @@ func GetConfig(t testing.TB) *Config {
 			require.NoError(t, err, "incorrect proxy url: "+config.Proxy)
 			http.DefaultTransport.(*http.Transport).Proxy = http.ProxyURL(proxy)
 		}
-		if config.GoCloak.UserName == "" {
-			config.GoCloak.UserName = "test_user"
+		if config.GoKeycloak.UserName == "" {
+			config.GoKeycloak.UserName = "test_user"
 		}
 	})
 	return config

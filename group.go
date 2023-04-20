@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 )
 
 // CreateGroup creates a new group.
-func (g *GoCloak) CreateGroup(ctx context.Context, token, realm string, group Group) (string, error) {
+func (g *GoKeycloak) CreateGroup(ctx context.Context, token, realm string, group Group) (string, error) {
 	const errMessage = "could not create group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -21,7 +21,7 @@ func (g *GoCloak) CreateGroup(ctx context.Context, token, realm string, group Gr
 }
 
 // CreateChildGroup creates a new child group
-func (g *GoCloak) CreateChildGroup(ctx context.Context, token, realm, groupID string, group Group) (string, error) {
+func (g *GoKeycloak) CreateChildGroup(ctx context.Context, token, realm, groupID string, group Group) (string, error) {
 	const errMessage = "could not create child group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -36,7 +36,7 @@ func (g *GoCloak) CreateChildGroup(ctx context.Context, token, realm, groupID st
 }
 
 // UpdateGroup updates the given group.
-func (g *GoCloak) UpdateGroup(ctx context.Context, token, realm string, updatedGroup Group) error {
+func (g *GoKeycloak) UpdateGroup(ctx context.Context, token, realm string, updatedGroup Group) error {
 	const errMessage = "could not update group"
 
 	if NilOrEmpty(updatedGroup.ID) {
@@ -50,7 +50,7 @@ func (g *GoCloak) UpdateGroup(ctx context.Context, token, realm string, updatedG
 }
 
 // DeleteGroup deletes the group with the given groupID.
-func (g *GoCloak) DeleteGroup(ctx context.Context, token, realm, groupID string) error {
+func (g *GoKeycloak) DeleteGroup(ctx context.Context, token, realm, groupID string) error {
 	const errMessage = "could not delete group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -60,7 +60,7 @@ func (g *GoCloak) DeleteGroup(ctx context.Context, token, realm, groupID string)
 }
 
 // GetGroup get group with id in realm
-func (g *GoCloak) GetGroup(ctx context.Context, token, realm, groupID string) (*Group, error) {
+func (g *GoKeycloak) GetGroup(ctx context.Context, token, realm, groupID string) (*Group, error) {
 	const errMessage = "could not get group"
 
 	var result Group
@@ -77,7 +77,7 @@ func (g *GoCloak) GetGroup(ctx context.Context, token, realm, groupID string) (*
 }
 
 // GetGroupByPath get group with path in realm
-func (g *GoCloak) GetGroupByPath(ctx context.Context, token, realm, groupPath string) (*Group, error) {
+func (g *GoKeycloak) GetGroupByPath(ctx context.Context, token, realm, groupPath string) (*Group, error) {
 	const errMessage = "could not get group"
 
 	var result Group
@@ -94,7 +94,7 @@ func (g *GoCloak) GetGroupByPath(ctx context.Context, token, realm, groupPath st
 }
 
 // GetGroups get all groups in realm
-func (g *GoCloak) GetGroups(ctx context.Context, token, realm string, params GetGroupsParams) ([]*Group, error) {
+func (g *GoKeycloak) GetGroups(ctx context.Context, token, realm string, params GetGroupsParams) ([]*Group, error) {
 	const errMessage = "could not get groups"
 
 	var result []*Group
@@ -116,7 +116,7 @@ func (g *GoCloak) GetGroups(ctx context.Context, token, realm string, params Get
 }
 
 // GetGroupsByRole gets groups assigned with a specific role of a realm
-func (g *GoCloak) GetGroupsByRole(ctx context.Context, token, realm string, roleName string) ([]*Group, error) {
+func (g *GoKeycloak) GetGroupsByRole(ctx context.Context, token, realm string, roleName string) ([]*Group, error) {
 	const errMessage = "could not get groups"
 
 	var result []*Group
@@ -132,7 +132,7 @@ func (g *GoCloak) GetGroupsByRole(ctx context.Context, token, realm string, role
 }
 
 // GetGroupsByClientRole gets groups with specified roles assigned of given client within a realm
-func (g *GoCloak) GetGroupsByClientRole(ctx context.Context, token, realm string, roleName string, clientID string) ([]*Group, error) {
+func (g *GoKeycloak) GetGroupsByClientRole(ctx context.Context, token, realm string, roleName string, clientID string) ([]*Group, error) {
 	const errMessage = "could not get groups"
 
 	var result []*Group
@@ -148,7 +148,7 @@ func (g *GoCloak) GetGroupsByClientRole(ctx context.Context, token, realm string
 }
 
 // GetGroupsCount gets the groups count in the realm
-func (g *GoCloak) GetGroupsCount(ctx context.Context, token, realm string, params GetGroupsParams) (int, error) {
+func (g *GoKeycloak) GetGroupsCount(ctx context.Context, token, realm string, params GetGroupsParams) (int, error) {
 	const errMessage = "could not get groups count"
 
 	var result GroupsCount
@@ -169,7 +169,7 @@ func (g *GoCloak) GetGroupsCount(ctx context.Context, token, realm string, param
 }
 
 // GetGroupMembers get a list of users of group with id in realm
-func (g *GoCloak) GetGroupMembers(ctx context.Context, token, realm, groupID string, params GetGroupsParams) ([]*User, error) {
+func (g *GoKeycloak) GetGroupMembers(ctx context.Context, token, realm, groupID string, params GetGroupsParams) ([]*User, error) {
 	const errMessage = "could not get group members"
 
 	var result []*User
@@ -191,7 +191,7 @@ func (g *GoCloak) GetGroupMembers(ctx context.Context, token, realm, groupID str
 }
 
 // AddClientRolesToGroup adds a client role to the group
-func (g *GoCloak) AddClientRolesToGroup(ctx context.Context, token, realm, idOfClient, groupID string, roles []Role) error {
+func (g *GoKeycloak) AddClientRolesToGroup(ctx context.Context, token, realm, idOfClient, groupID string, roles []Role) error {
 	const errMessage = "could not add client role to group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -204,12 +204,12 @@ func (g *GoCloak) AddClientRolesToGroup(ctx context.Context, token, realm, idOfC
 // AddClientRoleToGroup adds a client role to the group
 //
 // Deprecated: replaced by AddClientRolesToGroup
-func (g *GoCloak) AddClientRoleToGroup(ctx context.Context, token, realm, idOfClient, groupID string, roles []Role) error {
+func (g *GoKeycloak) AddClientRoleToGroup(ctx context.Context, token, realm, idOfClient, groupID string, roles []Role) error {
 	return g.AddClientRolesToGroup(ctx, token, realm, idOfClient, groupID, roles)
 }
 
 // DeleteClientRoleFromGroup removes a client role from from the group
-func (g *GoCloak) DeleteClientRoleFromGroup(ctx context.Context, token, realm, idOfClient, groupID string, roles []Role) error {
+func (g *GoKeycloak) DeleteClientRoleFromGroup(ctx context.Context, token, realm, idOfClient, groupID string, roles []Role) error {
 	const errMessage = "could not client role from group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).

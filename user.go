@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 // CreateUser creates the given user in the given realm and returns it's userID
 // Note: Keycloak has not documented what members of the User object are actually being accepted, when creating a user.
 // Things like RealmRoles must be attached using followup calls to the respective functions.
-func (g *GoCloak) CreateUser(ctx context.Context, token, realm string, user User) (string, error) {
+func (g *GoKeycloak) CreateUser(ctx context.Context, token, realm string, user User) (string, error) {
 	const errMessage = "could not create user"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -28,7 +28,7 @@ func (g *GoCloak) CreateUser(ctx context.Context, token, realm string, user User
 }
 
 // DeleteUser delete a given user
-func (g *GoCloak) DeleteUser(ctx context.Context, token, realm, userID string) error {
+func (g *GoKeycloak) DeleteUser(ctx context.Context, token, realm, userID string) error {
 	const errMessage = "could not delete user"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -38,7 +38,7 @@ func (g *GoCloak) DeleteUser(ctx context.Context, token, realm, userID string) e
 }
 
 // GetUserByID fetches a user from the given realm with the given userID
-func (g *GoCloak) GetUserByID(ctx context.Context, accessToken, realm, userID string) (*User, error) {
+func (g *GoKeycloak) GetUserByID(ctx context.Context, accessToken, realm, userID string) (*User, error) {
 	const errMessage = "could not get user by id"
 
 	if userID == "" {
@@ -58,7 +58,7 @@ func (g *GoCloak) GetUserByID(ctx context.Context, accessToken, realm, userID st
 }
 
 // GetUserCount gets the user count in the realm
-func (g *GoCloak) GetUserCount(ctx context.Context, token string, realm string, params GetUsersParams) (int, error) {
+func (g *GoKeycloak) GetUserCount(ctx context.Context, token string, realm string, params GetUsersParams) (int, error) {
 	const errMessage = "could not get user count"
 
 	var result int
@@ -80,7 +80,7 @@ func (g *GoCloak) GetUserCount(ctx context.Context, token string, realm string, 
 }
 
 // GetUserGroups get all groups for user
-func (g *GoCloak) GetUserGroups(ctx context.Context, token, realm, userID string, params GetGroupsParams) ([]*Group, error) {
+func (g *GoKeycloak) GetUserGroups(ctx context.Context, token, realm, userID string, params GetGroupsParams) ([]*Group, error) {
 	const errMessage = "could not get user groups"
 
 	var result []*Group
@@ -102,7 +102,7 @@ func (g *GoCloak) GetUserGroups(ctx context.Context, token, realm, userID string
 }
 
 // GetUsers get all users in realm
-func (g *GoCloak) GetUsers(ctx context.Context, token, realm string, params GetUsersParams) ([]*User, error) {
+func (g *GoKeycloak) GetUsers(ctx context.Context, token, realm string, params GetUsersParams) ([]*User, error) {
 	const errMessage = "could not get users"
 
 	var result []*User
@@ -124,7 +124,7 @@ func (g *GoCloak) GetUsers(ctx context.Context, token, realm string, params GetU
 }
 
 // GetUsersByRoleName returns all users have a given role
-func (g *GoCloak) GetUsersByRoleName(ctx context.Context, token, realm, roleName string, params GetUsersByRoleParams) ([]*User, error) {
+func (g *GoKeycloak) GetUsersByRoleName(ctx context.Context, token, realm, roleName string, params GetUsersByRoleParams) ([]*User, error) {
 	const errMessage = "could not get users by role name"
 
 	var result []*User
@@ -146,7 +146,7 @@ func (g *GoCloak) GetUsersByRoleName(ctx context.Context, token, realm, roleName
 }
 
 // GetUsersByClientRoleName returns all users have a given client role
-func (g *GoCloak) GetUsersByClientRoleName(ctx context.Context, token, realm, idOfClient, roleName string, params GetUsersByRoleParams) ([]*User, error) {
+func (g *GoKeycloak) GetUsersByClientRoleName(ctx context.Context, token, realm, idOfClient, roleName string, params GetUsersByRoleParams) ([]*User, error) {
 	const errMessage = "could not get users by client role name"
 
 	var result []*User
@@ -168,7 +168,7 @@ func (g *GoCloak) GetUsersByClientRoleName(ctx context.Context, token, realm, id
 }
 
 // SetPassword sets a new password for the user with the given id. Needs elevated privileges
-func (g *GoCloak) SetPassword(ctx context.Context, token, userID, realm, password string, temporary bool) error {
+func (g *GoKeycloak) SetPassword(ctx context.Context, token, userID, realm, password string, temporary bool) error {
 	const errMessage = "could not set password"
 
 	requestBody := SetPasswordRequest{Password: &password, Temporary: &temporary, Type: StringP("password")}
@@ -180,7 +180,7 @@ func (g *GoCloak) SetPassword(ctx context.Context, token, userID, realm, passwor
 }
 
 // UpdateUser updates a given user
-func (g *GoCloak) UpdateUser(ctx context.Context, token, realm string, user User) error {
+func (g *GoKeycloak) UpdateUser(ctx context.Context, token, realm string, user User) error {
 	const errMessage = "could not update user"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -191,7 +191,7 @@ func (g *GoCloak) UpdateUser(ctx context.Context, token, realm string, user User
 }
 
 // AddUserToGroup puts given user to given group
-func (g *GoCloak) AddUserToGroup(ctx context.Context, token, realm, userID, groupID string) error {
+func (g *GoKeycloak) AddUserToGroup(ctx context.Context, token, realm, userID, groupID string) error {
 	const errMessage = "could not add user to group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -201,7 +201,7 @@ func (g *GoCloak) AddUserToGroup(ctx context.Context, token, realm, userID, grou
 }
 
 // DeleteUserFromGroup deletes given user from given group
-func (g *GoCloak) DeleteUserFromGroup(ctx context.Context, token, realm, userID, groupID string) error {
+func (g *GoKeycloak) DeleteUserFromGroup(ctx context.Context, token, realm, userID, groupID string) error {
 	const errMessage = "could not delete user from group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -211,7 +211,7 @@ func (g *GoCloak) DeleteUserFromGroup(ctx context.Context, token, realm, userID,
 }
 
 // GetUserSessions returns user sessions associated with the user
-func (g *GoCloak) GetUserSessions(ctx context.Context, token, realm, userID string) ([]*UserSessionRepresentation, error) {
+func (g *GoKeycloak) GetUserSessions(ctx context.Context, token, realm, userID string) ([]*UserSessionRepresentation, error) {
 	const errMessage = "could not get user sessions"
 
 	var res []*UserSessionRepresentation
@@ -227,7 +227,7 @@ func (g *GoCloak) GetUserSessions(ctx context.Context, token, realm, userID stri
 }
 
 // GetUserOfflineSessionsForClient returns offline sessions associated with the user and client
-func (g *GoCloak) GetUserOfflineSessionsForClient(ctx context.Context, token, realm, userID, idOfClient string) ([]*UserSessionRepresentation, error) {
+func (g *GoKeycloak) GetUserOfflineSessionsForClient(ctx context.Context, token, realm, userID, idOfClient string) ([]*UserSessionRepresentation, error) {
 	const errMessage = "could not get user offline sessions for client"
 
 	var res []*UserSessionRepresentation
@@ -243,7 +243,7 @@ func (g *GoCloak) GetUserOfflineSessionsForClient(ctx context.Context, token, re
 }
 
 // AddClientRolesToUser adds client-level role mappings
-func (g *GoCloak) AddClientRolesToUser(ctx context.Context, token, realm, idOfClient, userID string, roles []Role) error {
+func (g *GoKeycloak) AddClientRolesToUser(ctx context.Context, token, realm, idOfClient, userID string, roles []Role) error {
 	const errMessage = "could not add client role to user"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -256,12 +256,12 @@ func (g *GoCloak) AddClientRolesToUser(ctx context.Context, token, realm, idOfCl
 // AddClientRoleToUser adds client-level role mappings
 //
 // Deprecated: replaced by AddClientRolesToUser
-func (g *GoCloak) AddClientRoleToUser(ctx context.Context, token, realm, idOfClient, userID string, roles []Role) error {
+func (g *GoKeycloak) AddClientRoleToUser(ctx context.Context, token, realm, idOfClient, userID string, roles []Role) error {
 	return g.AddClientRolesToUser(ctx, token, realm, idOfClient, userID, roles)
 }
 
 // DeleteClientRolesFromUser adds client-level role mappings
-func (g *GoCloak) DeleteClientRolesFromUser(ctx context.Context, token, realm, idOfClient, userID string, roles []Role) error {
+func (g *GoKeycloak) DeleteClientRolesFromUser(ctx context.Context, token, realm, idOfClient, userID string, roles []Role) error {
 	const errMessage = "could not delete client role from user"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -274,12 +274,12 @@ func (g *GoCloak) DeleteClientRolesFromUser(ctx context.Context, token, realm, i
 // DeleteClientRoleFromUser adds client-level role mappings
 //
 // Deprecated: replaced by DeleteClientRolesFrom
-func (g *GoCloak) DeleteClientRoleFromUser(ctx context.Context, token, realm, idOfClient, userID string, roles []Role) error {
+func (g *GoKeycloak) DeleteClientRoleFromUser(ctx context.Context, token, realm, idOfClient, userID string, roles []Role) error {
 	return g.DeleteClientRolesFromUser(ctx, token, realm, idOfClient, userID, roles)
 }
 
 // GetUserFederatedIdentities gets all user federated identities
-func (g *GoCloak) GetUserFederatedIdentities(ctx context.Context, token, realm, userID string) ([]*FederatedIdentityRepresentation, error) {
+func (g *GoKeycloak) GetUserFederatedIdentities(ctx context.Context, token, realm, userID string) ([]*FederatedIdentityRepresentation, error) {
 	const errMessage = "could not get user federated identities"
 
 	var res []*FederatedIdentityRepresentation
@@ -295,7 +295,7 @@ func (g *GoCloak) GetUserFederatedIdentities(ctx context.Context, token, realm, 
 }
 
 // CreateUserFederatedIdentity creates an user federated identity
-func (g *GoCloak) CreateUserFederatedIdentity(ctx context.Context, token, realm, userID, providerID string, federatedIdentityRep FederatedIdentityRepresentation) error {
+func (g *GoKeycloak) CreateUserFederatedIdentity(ctx context.Context, token, realm, userID, providerID string, federatedIdentityRep FederatedIdentityRepresentation) error {
 	const errMessage = "could not create user federeated identity"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -306,7 +306,7 @@ func (g *GoCloak) CreateUserFederatedIdentity(ctx context.Context, token, realm,
 }
 
 // DeleteUserFederatedIdentity deletes an user federated identity
-func (g *GoCloak) DeleteUserFederatedIdentity(ctx context.Context, token, realm, userID, providerID string) error {
+func (g *GoKeycloak) DeleteUserFederatedIdentity(ctx context.Context, token, realm, userID, providerID string) error {
 	const errMessage = "could not delete user federeated identity"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).

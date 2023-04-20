@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (g *GoCloak) getRequestingParty(ctx context.Context, token, realm string, options RequestingPartyTokenOptions, res interface{}) (*resty.Response, error) {
+func (g *GoKeycloak) getRequestingParty(ctx context.Context, token, realm string, options RequestingPartyTokenOptions, res interface{}) (*resty.Response, error) {
 	return g.GetRequestWithBearerAuth(ctx, token).
 		SetFormData(options.FormData()).
 		SetFormDataFromValues(url.Values{"permission": PStringSlice(options.Permissions)}).
@@ -18,7 +18,7 @@ func (g *GoCloak) getRequestingParty(ctx context.Context, token, realm string, o
 
 // URL: {{keycloak_url}}/realms/{{realm}}/protocol/openid-connect/token
 // GetRequestingPartyToken returns a requesting party token with permissions granted by the server
-func (g *GoCloak) GetRequestingPartyToken(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*JWT, error) {
+func (g *GoKeycloak) GetRequestingPartyToken(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*JWT, error) {
 	const errMessage = "could not get requesting party token"
 
 	var res JWT
@@ -32,7 +32,7 @@ func (g *GoCloak) GetRequestingPartyToken(ctx context.Context, token, realm stri
 }
 
 // GetRequestingPartyPermissions returns a requesting party permissions granted by the server
-func (g *GoCloak) GetRequestingPartyPermissions(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*[]RequestingPartyPermission, error) {
+func (g *GoKeycloak) GetRequestingPartyPermissions(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*[]RequestingPartyPermission, error) {
 	const errMessage = "could not get requesting party token"
 
 	var res []RequestingPartyPermission
@@ -48,7 +48,7 @@ func (g *GoCloak) GetRequestingPartyPermissions(ctx context.Context, token, real
 }
 
 // GetRequestingPartyPermissionDecision returns a requesting party permission decision granted by the server
-func (g *GoCloak) GetRequestingPartyPermissionDecision(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*RequestingPartyPermissionDecision, error) {
+func (g *GoKeycloak) GetRequestingPartyPermissionDecision(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*RequestingPartyPermissionDecision, error) {
 	const errMessage = "could not get requesting party token"
 
 	var res RequestingPartyPermissionDecision
@@ -68,7 +68,7 @@ func (g *GoCloak) GetRequestingPartyPermissionDecision(ctx context.Context, toke
 // -----------
 
 // CreateRealmRole creates a role in a realm
-func (g *GoCloak) CreateRealmRole(ctx context.Context, token string, realm string, role Role) (string, error) {
+func (g *GoKeycloak) CreateRealmRole(ctx context.Context, token string, realm string, role Role) (string, error) {
 	const errMessage = "could not create realm role"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -83,7 +83,7 @@ func (g *GoCloak) CreateRealmRole(ctx context.Context, token string, realm strin
 }
 
 // GetRealmRole returns a role from a realm by role's name
-func (g *GoCloak) GetRealmRole(ctx context.Context, token, realm, roleName string) (*Role, error) {
+func (g *GoKeycloak) GetRealmRole(ctx context.Context, token, realm, roleName string) (*Role, error) {
 	const errMessage = "could not get realm role"
 
 	var result Role
@@ -100,7 +100,7 @@ func (g *GoCloak) GetRealmRole(ctx context.Context, token, realm, roleName strin
 }
 
 // GetRealmRoleByID returns a role from a realm by role's ID
-func (g *GoCloak) GetRealmRoleByID(ctx context.Context, token, realm, roleID string) (*Role, error) {
+func (g *GoKeycloak) GetRealmRoleByID(ctx context.Context, token, realm, roleID string) (*Role, error) {
 	const errMessage = "could not get realm role"
 
 	var result Role
@@ -116,7 +116,7 @@ func (g *GoCloak) GetRealmRoleByID(ctx context.Context, token, realm, roleID str
 }
 
 // GetRealmRoles get all roles of the given realm.
-func (g *GoCloak) GetRealmRoles(ctx context.Context, token, realm string, params GetRoleParams) ([]*Role, error) {
+func (g *GoKeycloak) GetRealmRoles(ctx context.Context, token, realm string, params GetRoleParams) ([]*Role, error) {
 	const errMessage = "could not get realm roles"
 
 	var result []*Role
@@ -138,7 +138,7 @@ func (g *GoCloak) GetRealmRoles(ctx context.Context, token, realm string, params
 }
 
 // GetRealmRolesByUserID returns all roles assigned to the given user
-func (g *GoCloak) GetRealmRolesByUserID(ctx context.Context, token, realm, userID string) ([]*Role, error) {
+func (g *GoKeycloak) GetRealmRolesByUserID(ctx context.Context, token, realm, userID string) ([]*Role, error) {
 	const errMessage = "could not get realm roles by user id"
 
 	var result []*Role
@@ -154,7 +154,7 @@ func (g *GoCloak) GetRealmRolesByUserID(ctx context.Context, token, realm, userI
 }
 
 // GetRealmRolesByGroupID returns all roles assigned to the given group
-func (g *GoCloak) GetRealmRolesByGroupID(ctx context.Context, token, realm, groupID string) ([]*Role, error) {
+func (g *GoKeycloak) GetRealmRolesByGroupID(ctx context.Context, token, realm, groupID string) ([]*Role, error) {
 	const errMessage = "could not get realm roles by group id"
 
 	var result []*Role
@@ -170,7 +170,7 @@ func (g *GoCloak) GetRealmRolesByGroupID(ctx context.Context, token, realm, grou
 }
 
 // UpdateRealmRole updates a role in a realm
-func (g *GoCloak) UpdateRealmRole(ctx context.Context, token, realm, roleName string, role Role) error {
+func (g *GoKeycloak) UpdateRealmRole(ctx context.Context, token, realm, roleName string, role Role) error {
 	const errMessage = "could not update realm role"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -181,7 +181,7 @@ func (g *GoCloak) UpdateRealmRole(ctx context.Context, token, realm, roleName st
 }
 
 // UpdateRealmRoleByID updates a role in a realm by role's ID
-func (g *GoCloak) UpdateRealmRoleByID(ctx context.Context, token, realm, roleID string, role Role) error {
+func (g *GoKeycloak) UpdateRealmRoleByID(ctx context.Context, token, realm, roleID string, role Role) error {
 	const errMessage = "could not update realm role"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -192,7 +192,7 @@ func (g *GoCloak) UpdateRealmRoleByID(ctx context.Context, token, realm, roleID 
 }
 
 // DeleteRealmRole deletes a role in a realm by role's name
-func (g *GoCloak) DeleteRealmRole(ctx context.Context, token, realm, roleName string) error {
+func (g *GoKeycloak) DeleteRealmRole(ctx context.Context, token, realm, roleName string) error {
 	const errMessage = "could not delete realm role"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -202,7 +202,7 @@ func (g *GoCloak) DeleteRealmRole(ctx context.Context, token, realm, roleName st
 }
 
 // AddRealmRoleToUser adds realm-level role mappings
-func (g *GoCloak) AddRealmRoleToUser(ctx context.Context, token, realm, userID string, roles []Role) error {
+func (g *GoKeycloak) AddRealmRoleToUser(ctx context.Context, token, realm, userID string, roles []Role) error {
 	const errMessage = "could not add realm role to user"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -213,7 +213,7 @@ func (g *GoCloak) AddRealmRoleToUser(ctx context.Context, token, realm, userID s
 }
 
 // DeleteRealmRoleFromUser deletes realm-level role mappings
-func (g *GoCloak) DeleteRealmRoleFromUser(ctx context.Context, token, realm, userID string, roles []Role) error {
+func (g *GoKeycloak) DeleteRealmRoleFromUser(ctx context.Context, token, realm, userID string, roles []Role) error {
 	const errMessage = "could not delete realm role from user"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -224,7 +224,7 @@ func (g *GoCloak) DeleteRealmRoleFromUser(ctx context.Context, token, realm, use
 }
 
 // AddRealmRoleToGroup adds realm-level role mappings
-func (g *GoCloak) AddRealmRoleToGroup(ctx context.Context, token, realm, groupID string, roles []Role) error {
+func (g *GoKeycloak) AddRealmRoleToGroup(ctx context.Context, token, realm, groupID string, roles []Role) error {
 	const errMessage = "could not add realm role to group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -235,7 +235,7 @@ func (g *GoCloak) AddRealmRoleToGroup(ctx context.Context, token, realm, groupID
 }
 
 // DeleteRealmRoleFromGroup deletes realm-level role mappings
-func (g *GoCloak) DeleteRealmRoleFromGroup(ctx context.Context, token, realm, groupID string, roles []Role) error {
+func (g *GoKeycloak) DeleteRealmRoleFromGroup(ctx context.Context, token, realm, groupID string, roles []Role) error {
 	const errMessage = "could not delete realm role from group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -246,7 +246,7 @@ func (g *GoCloak) DeleteRealmRoleFromGroup(ctx context.Context, token, realm, gr
 }
 
 // AddRealmRoleComposite adds a role to the composite.
-func (g *GoCloak) AddRealmRoleComposite(ctx context.Context, token, realm, roleName string, roles []Role) error {
+func (g *GoKeycloak) AddRealmRoleComposite(ctx context.Context, token, realm, roleName string, roles []Role) error {
 	const errMessage = "could not add realm role composite"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -257,7 +257,7 @@ func (g *GoCloak) AddRealmRoleComposite(ctx context.Context, token, realm, roleN
 }
 
 // DeleteRealmRoleComposite deletes a role from the composite.
-func (g *GoCloak) DeleteRealmRoleComposite(ctx context.Context, token, realm, roleName string, roles []Role) error {
+func (g *GoKeycloak) DeleteRealmRoleComposite(ctx context.Context, token, realm, roleName string, roles []Role) error {
 	const errMessage = "could not delete realm role composite"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -268,7 +268,7 @@ func (g *GoCloak) DeleteRealmRoleComposite(ctx context.Context, token, realm, ro
 }
 
 // GetCompositeRealmRoles returns all realm composite roles associated with the given realm role
-func (g *GoCloak) GetCompositeRealmRoles(ctx context.Context, token, realm, roleName string) ([]*Role, error) {
+func (g *GoKeycloak) GetCompositeRealmRoles(ctx context.Context, token, realm, roleName string) ([]*Role, error) {
 	const errMessage = "could not get composite realm roles by role"
 
 	var result []*Role
@@ -284,7 +284,7 @@ func (g *GoCloak) GetCompositeRealmRoles(ctx context.Context, token, realm, role
 }
 
 // GetCompositeRolesByRoleID returns all realm composite roles associated with the given client role
-func (g *GoCloak) GetCompositeRolesByRoleID(ctx context.Context, token, realm, roleID string) ([]*Role, error) {
+func (g *GoKeycloak) GetCompositeRolesByRoleID(ctx context.Context, token, realm, roleID string) ([]*Role, error) {
 	const errMessage = "could not get composite client roles by role id"
 
 	var result []*Role
@@ -300,7 +300,7 @@ func (g *GoCloak) GetCompositeRolesByRoleID(ctx context.Context, token, realm, r
 }
 
 // GetCompositeRealmRolesByRoleID returns all realm composite roles associated with the given client role
-func (g *GoCloak) GetCompositeRealmRolesByRoleID(ctx context.Context, token, realm, roleID string) ([]*Role, error) {
+func (g *GoKeycloak) GetCompositeRealmRolesByRoleID(ctx context.Context, token, realm, roleID string) ([]*Role, error) {
 	const errMessage = "could not get composite client roles by role id"
 
 	var result []*Role
@@ -316,7 +316,7 @@ func (g *GoCloak) GetCompositeRealmRolesByRoleID(ctx context.Context, token, rea
 }
 
 // GetCompositeRealmRolesByUserID returns all realm roles and composite roles assigned to the given user
-func (g *GoCloak) GetCompositeRealmRolesByUserID(ctx context.Context, token, realm, userID string) ([]*Role, error) {
+func (g *GoKeycloak) GetCompositeRealmRolesByUserID(ctx context.Context, token, realm, userID string) ([]*Role, error) {
 	const errMessage = "could not get composite client roles by user id"
 
 	var result []*Role
@@ -332,7 +332,7 @@ func (g *GoCloak) GetCompositeRealmRolesByUserID(ctx context.Context, token, rea
 }
 
 // GetCompositeRealmRolesByGroupID returns all realm roles and composite roles assigned to the given group
-func (g *GoCloak) GetCompositeRealmRolesByGroupID(ctx context.Context, token, realm, groupID string) ([]*Role, error) {
+func (g *GoKeycloak) GetCompositeRealmRolesByGroupID(ctx context.Context, token, realm, groupID string) ([]*Role, error) {
 	const errMessage = "could not get composite client roles by user id"
 
 	var result []*Role
@@ -348,7 +348,7 @@ func (g *GoCloak) GetCompositeRealmRolesByGroupID(ctx context.Context, token, re
 }
 
 // GetAvailableRealmRolesByUserID returns all available realm roles to the given user
-func (g *GoCloak) GetAvailableRealmRolesByUserID(ctx context.Context, token, realm, userID string) ([]*Role, error) {
+func (g *GoKeycloak) GetAvailableRealmRolesByUserID(ctx context.Context, token, realm, userID string) ([]*Role, error) {
 	const errMessage = "could not get available client roles by user id"
 
 	var result []*Role
@@ -364,7 +364,7 @@ func (g *GoCloak) GetAvailableRealmRolesByUserID(ctx context.Context, token, rea
 }
 
 // GetAvailableRealmRolesByGroupID returns all available realm roles to the given group
-func (g *GoCloak) GetAvailableRealmRolesByGroupID(ctx context.Context, token, realm, groupID string) ([]*Role, error) {
+func (g *GoKeycloak) GetAvailableRealmRolesByGroupID(ctx context.Context, token, realm, groupID string) ([]*Role, error) {
 	const errMessage = "could not get available client roles by user id"
 
 	var result []*Role

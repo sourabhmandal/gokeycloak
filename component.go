@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 )
 
 // GetComponents get all components in realm
-func (g *GoCloak) GetComponents(ctx context.Context, token, realm string) ([]*Component, error) {
+func (g *GoKeycloak) GetComponents(ctx context.Context, token, realm string) ([]*Component, error) {
 	const errMessage = "could not get components"
 
 	var result []*Component
@@ -24,7 +24,7 @@ func (g *GoCloak) GetComponents(ctx context.Context, token, realm string) ([]*Co
 }
 
 // GetComponentsWithParams get all components in realm with query params
-func (g *GoCloak) GetComponentsWithParams(ctx context.Context, token, realm string, params GetComponentsParams) ([]*Component, error) {
+func (g *GoKeycloak) GetComponentsWithParams(ctx context.Context, token, realm string, params GetComponentsParams) ([]*Component, error) {
 	const errMessage = "could not get components"
 	var result []*Component
 
@@ -45,7 +45,7 @@ func (g *GoCloak) GetComponentsWithParams(ctx context.Context, token, realm stri
 }
 
 // GetComponent get exactly one component by ID
-func (g *GoCloak) GetComponent(ctx context.Context, token, realm string, componentID string) (*Component, error) {
+func (g *GoKeycloak) GetComponent(ctx context.Context, token, realm string, componentID string) (*Component, error) {
 	const errMessage = "could not get components"
 	var result *Component
 
@@ -63,7 +63,7 @@ func (g *GoCloak) GetComponent(ctx context.Context, token, realm string, compone
 }
 
 // UpdateComponent updates the given component
-func (g *GoCloak) UpdateComponent(ctx context.Context, token, realm string, component Component) error {
+func (g *GoKeycloak) UpdateComponent(ctx context.Context, token, realm string, component Component) error {
 	const errMessage = "could not update component"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -74,7 +74,7 @@ func (g *GoCloak) UpdateComponent(ctx context.Context, token, realm string, comp
 }
 
 // GetDefaultGroups returns a list of default groups
-func (g *GoCloak) GetDefaultGroups(ctx context.Context, token, realm string) ([]*Group, error) {
+func (g *GoKeycloak) GetDefaultGroups(ctx context.Context, token, realm string) ([]*Group, error) {
 	const errMessage = "could not get default groups"
 
 	var result []*Group
@@ -91,7 +91,7 @@ func (g *GoCloak) GetDefaultGroups(ctx context.Context, token, realm string) ([]
 }
 
 // AddDefaultGroup adds group to the list of default groups
-func (g *GoCloak) AddDefaultGroup(ctx context.Context, token, realm, groupID string) error {
+func (g *GoKeycloak) AddDefaultGroup(ctx context.Context, token, realm, groupID string) error {
 	const errMessage = "could not add default group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -101,7 +101,7 @@ func (g *GoCloak) AddDefaultGroup(ctx context.Context, token, realm, groupID str
 }
 
 // RemoveDefaultGroup removes group from the list of default groups
-func (g *GoCloak) RemoveDefaultGroup(ctx context.Context, token, realm, groupID string) error {
+func (g *GoKeycloak) RemoveDefaultGroup(ctx context.Context, token, realm, groupID string) error {
 	const errMessage = "could not remove default group"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).

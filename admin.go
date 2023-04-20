@@ -1,30 +1,30 @@
-package gocloak
+package gokeycloak
 
 import "context"
 
-func (g *GoCloak) getAdminRealmURL(realm string, path ...string) string {
+func (g *GoKeycloak) getAdminRealmURL(realm string, path ...string) string {
 	path = append([]string{g.basePath, g.Config.authAdminRealms, realm}, path...)
 	return makeURL(path...)
 }
 
 // SetLegacyWildFlySupport maintain legacy WildFly support.
-func SetLegacyWildFlySupport() func(g *GoCloak) {
-	return func(g *GoCloak) {
+func SetLegacyWildFlySupport() func(g *GoKeycloak) {
+	return func(g *GoKeycloak) {
 		g.Config.authAdminRealms = makeURL("auth", "admin", "realms")
 		g.Config.authRealms = makeURL("auth", "realms")
 	}
 }
 
 // SetAuthAdminRealms sets the auth admin realm
-func SetAuthAdminRealms(url string) func(g *GoCloak) {
-	return func(g *GoCloak) {
+func SetAuthAdminRealms(url string) func(g *GoKeycloak) {
+	return func(g *GoKeycloak) {
 		g.Config.authAdminRealms = url
 	}
 }
 
 // URL: {{keycloak_url}}/admin/realms
 // GetServerInfo fetches the server info.
-func (g *GoCloak) GetAllRealmsInfo(ctx context.Context, adminAccessToken string) ([]*ServerInfoRepresentation, error) {
+func (g *GoKeycloak) GetAllRealmsInfo(ctx context.Context, adminAccessToken string) ([]*ServerInfoRepresentation, error) {
 	errMessage := "could not get server info"
 	var result []*ServerInfoRepresentation
 
@@ -40,7 +40,7 @@ func (g *GoCloak) GetAllRealmsInfo(ctx context.Context, adminAccessToken string)
 }
 
 // LogoutAllSessions logs out all sessions of a user given an id.
-func (g *GoCloak) LogoutAllSessions(ctx context.Context, adminAccessToken, realm, userID string) error {
+func (g *GoKeycloak) LogoutAllSessions(ctx context.Context, adminAccessToken, realm, userID string) error {
 	const errMessage = "could not logout"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, adminAccessToken).
@@ -50,7 +50,7 @@ func (g *GoCloak) LogoutAllSessions(ctx context.Context, adminAccessToken, realm
 }
 
 // SendVerifyEmail sends a verification e-mail to a user.
-func (g *GoCloak) SendVerifyEmail(ctx context.Context, token, userID, realm string, params ...SendVerificationMailParams) error {
+func (g *GoKeycloak) SendVerifyEmail(ctx context.Context, token, userID, realm string, params ...SendVerificationMailParams) error {
 	const errMessage = "could not execute actions email"
 
 	queryParams := map[string]string{}

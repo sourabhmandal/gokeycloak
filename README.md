@@ -4,9 +4,9 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Nerzal/gocloak)](https://goreportcard.com/report/github.com/Nerzal/gocloak)
 [![Go Doc](https://godoc.org/github.com/Nerzal/gocloak?status.svg)](https://godoc.org/github.com/Nerzal/gocloak)
 [![Build Status](https://github.com/Nerzal/gocloak/workflows/Tests/badge.svg)](https://github.com/Nerzal/gocloak/actions?query=branch%3Amain+event%3Apush)
-[![GitHub release](https://img.shields.io/github/tag/Nerzal/gocloak.svg)](https://GitHub.com/Nerzal/gocloak/releases/)
+[![GitHub release](https://img.shields.io/github/tag/Nerzal/gokeycloak.svg)](https://GitHub.com/Nerzal/gocloak/releases/)
 [![codecov](https://codecov.io/gh/Nerzal/gocloak/branch/master/graph/badge.svg)](https://codecov.io/gh/Nerzal/gocloak)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FNerzal%2Fgocloak.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FNerzal%2Fgocloak?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FNerzal%2Fgokeycloak.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FNerzal%2Fgocloak?ref=badge_shield)
 
 Golang Keycloak API Package
 
@@ -44,19 +44,19 @@ go get github.com/Nerzal/gocloak/v13
 ### Create New User
 
 ```go
- client := gocloak.NewClient("https://mycool.keycloak.instance")
+ client := gokeycloak.NewClient("https://mycool.keycloak.instance")
  ctx := context.Background()
  token, err := client.LoginAdmin(ctx, "user", "password", "realmName")
  if err != nil {
   panic("Something wrong with the credentials or url")
  }
 
- user := gocloak.User{
-  FirstName: gocloak.StringP("Bob"),
-  LastName:  gocloak.StringP("Uncle"),
-  Email:     gocloak.StringP("something@really.wrong"),
-  Enabled:   gocloak.BoolP(true),
-  Username:  gocloak.StringP("CoolGuy"),
+ user := gokeycloak.User{
+  FirstName: gokeycloak.StringP("Bob"),
+  LastName:  gokeycloak.StringP("Uncle"),
+  Email:     gokeycloak.StringP("something@really.wrong"),
+  Enabled:   gokeycloak.BoolP(true),
+  Username:  gokeycloak.StringP("CoolGuy"),
  }
 
  _, err = client.CreateUser(ctx, token.AccessToken, "realm", user)
@@ -68,7 +68,7 @@ go get github.com/Nerzal/gocloak/v13
 ### Introspect Token
 
 ```go
- client := gocloak.NewClient(hostname)
+ client := gokeycloak.NewClient(hostname)
  ctx := context.Background()
  token, err := client.LoginClient(ctx, clientID, clientSecret, realm)
  if err != nil {
@@ -102,7 +102,7 @@ To get the `clientId` from `id`, use `GetClients` method with `GetClientsParams{
   c.Ctx,
   c.JWT.AccessToken,
   c.Realm,
-  gocloak.GetClientsParams{
+  gokeycloak.GetClientsParams{
    ClientID: &clientName,
   },
  )
@@ -372,7 +372,7 @@ DeleteAuthenticationFlow(ctx context.Context, token, realm, flowID string) error
 ## Configure gocloak to skip TLS Insecure Verification
 
 ```go
-    client := gocloak.NewClient(serverURL)
+    client := gokeycloak.NewClient(serverURL)
     restyClient := client.RestyClient()
     restyClient.SetDebug(true)
     restyClient.SetTLSClientConfig(&tls.Config{ InsecureSkipVerify: true })
@@ -428,7 +428,7 @@ docker rm gocloak-test
 The custom types contain many pointers, so printing them yields mostly pointer values, which aren't much help when debugging your application. For example
 
 ```go
-someRealmRepresentation := gocloak.RealmRepresentation{
+someRealmRepresentation := gokeycloak.RealmRepresentation{
    <snip>
 }
 
@@ -489,7 +489,7 @@ Note that empty parameters are not included, because of the use of ```omitempty`
 
 ## License
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FNerzal%2Fgocloak.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FNerzal%2Fgocloak?ref=badge_large)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FNerzal%2Fgokeycloak.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FNerzal%2Fgocloak?ref=badge_large)
 
 ## Related Projects
 

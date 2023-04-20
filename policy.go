@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 )
 
 // GetPolicy returns a client's policy with the given id
-func (g *GoCloak) GetPolicy(ctx context.Context, token, realm, idOfClient, policyID string) (*PolicyRepresentation, error) {
+func (g *GoKeycloak) GetPolicy(ctx context.Context, token, realm, idOfClient, policyID string) (*PolicyRepresentation, error) {
 	const errMessage = "could not get policy"
 
 	var result PolicyRepresentation
@@ -23,7 +23,7 @@ func (g *GoCloak) GetPolicy(ctx context.Context, token, realm, idOfClient, polic
 }
 
 // GetPolicies returns policies associated with the client
-func (g *GoCloak) GetPolicies(ctx context.Context, token, realm, idOfClient string, params GetPolicyParams) ([]*PolicyRepresentation, error) {
+func (g *GoKeycloak) GetPolicies(ctx context.Context, token, realm, idOfClient string, params GetPolicyParams) ([]*PolicyRepresentation, error) {
 	const errMessage = "could not get policies"
 
 	queryParams, err := GetQueryParams(params)
@@ -50,7 +50,7 @@ func (g *GoCloak) GetPolicies(ctx context.Context, token, realm, idOfClient stri
 }
 
 // CreatePolicy creates a policy associated with the client
-func (g *GoCloak) CreatePolicy(ctx context.Context, token, realm, idOfClient string, policy PolicyRepresentation) (*PolicyRepresentation, error) {
+func (g *GoKeycloak) CreatePolicy(ctx context.Context, token, realm, idOfClient string, policy PolicyRepresentation) (*PolicyRepresentation, error) {
 	const errMessage = "could not create policy"
 
 	if NilOrEmpty(policy.Type) {
@@ -71,7 +71,7 @@ func (g *GoCloak) CreatePolicy(ctx context.Context, token, realm, idOfClient str
 }
 
 // UpdatePolicy updates a policy associated with the client
-func (g *GoCloak) UpdatePolicy(ctx context.Context, token, realm, idOfClient string, policy PolicyRepresentation) error {
+func (g *GoKeycloak) UpdatePolicy(ctx context.Context, token, realm, idOfClient string, policy PolicyRepresentation) error {
 	const errMessage = "could not update policy"
 
 	if NilOrEmpty(policy.ID) {
@@ -86,7 +86,7 @@ func (g *GoCloak) UpdatePolicy(ctx context.Context, token, realm, idOfClient str
 }
 
 // DeletePolicy deletes a policy associated with the client
-func (g *GoCloak) DeletePolicy(ctx context.Context, token, realm, idOfClient, policyID string) error {
+func (g *GoKeycloak) DeletePolicy(ctx context.Context, token, realm, idOfClient, policyID string) error {
 	const errMessage = "could not delete policy"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -96,7 +96,7 @@ func (g *GoCloak) DeletePolicy(ctx context.Context, token, realm, idOfClient, po
 }
 
 // GetAuthorizationPolicyAssociatedPolicies returns a client's associated policies of specific policy with the given policy id, using access token from admin
-func (g *GoCloak) GetAuthorizationPolicyAssociatedPolicies(ctx context.Context, token, realm, idOfClient, policyID string) ([]*PolicyRepresentation, error) {
+func (g *GoKeycloak) GetAuthorizationPolicyAssociatedPolicies(ctx context.Context, token, realm, idOfClient, policyID string) ([]*PolicyRepresentation, error) {
 	const errMessage = "could not get policy associated policies"
 
 	var result []*PolicyRepresentation
@@ -112,7 +112,7 @@ func (g *GoCloak) GetAuthorizationPolicyAssociatedPolicies(ctx context.Context, 
 }
 
 // GetAuthorizationPolicyResources returns a client's resources of specific policy with the given policy id, using access token from admin
-func (g *GoCloak) GetAuthorizationPolicyResources(ctx context.Context, token, realm, idOfClient, policyID string) ([]*PolicyResourceRepresentation, error) {
+func (g *GoKeycloak) GetAuthorizationPolicyResources(ctx context.Context, token, realm, idOfClient, policyID string) ([]*PolicyResourceRepresentation, error) {
 	const errMessage = "could not get policy resources"
 
 	var result []*PolicyResourceRepresentation
@@ -128,7 +128,7 @@ func (g *GoCloak) GetAuthorizationPolicyResources(ctx context.Context, token, re
 }
 
 // GetAuthorizationPolicyScopes returns a client's scopes of specific policy with the given policy id, using access token from admin
-func (g *GoCloak) GetAuthorizationPolicyScopes(ctx context.Context, token, realm, idOfClient, policyID string) ([]*PolicyScopeRepresentation, error) {
+func (g *GoKeycloak) GetAuthorizationPolicyScopes(ctx context.Context, token, realm, idOfClient, policyID string) ([]*PolicyScopeRepresentation, error) {
 	const errMessage = "could not get policy scopes"
 
 	var result []*PolicyScopeRepresentation
@@ -144,7 +144,7 @@ func (g *GoCloak) GetAuthorizationPolicyScopes(ctx context.Context, token, realm
 }
 
 // GetResourcePolicy updates a permission for a specific resource, using token obtained by Resource Owner Password Credentials Grant or Token exchange
-func (g *GoCloak) GetResourcePolicy(ctx context.Context, token, realm, permissionID string) (*ResourcePolicyRepresentation, error) {
+func (g *GoKeycloak) GetResourcePolicy(ctx context.Context, token, realm, permissionID string) (*ResourcePolicyRepresentation, error) {
 	const errMessage = "could not get resource policy"
 
 	var result ResourcePolicyRepresentation
@@ -160,7 +160,7 @@ func (g *GoCloak) GetResourcePolicy(ctx context.Context, token, realm, permissio
 }
 
 // GetResourcePolicies returns resources associated with the client, using token obtained by Resource Owner Password Credentials Grant or Token exchange
-func (g *GoCloak) GetResourcePolicies(ctx context.Context, token, realm string, params GetResourcePoliciesParams) ([]*ResourcePolicyRepresentation, error) {
+func (g *GoKeycloak) GetResourcePolicies(ctx context.Context, token, realm string, params GetResourcePoliciesParams) ([]*ResourcePolicyRepresentation, error) {
 	const errMessage = "could not get resource policies"
 
 	queryParams, err := GetQueryParams(params)
@@ -182,7 +182,7 @@ func (g *GoCloak) GetResourcePolicies(ctx context.Context, token, realm string, 
 }
 
 // CreateResourcePolicy associates a permission with a specific resource, using token obtained by Resource Owner Password Credentials Grant or Token exchange
-func (g *GoCloak) CreateResourcePolicy(ctx context.Context, token, realm, resourceID string, policy ResourcePolicyRepresentation) (*ResourcePolicyRepresentation, error) {
+func (g *GoKeycloak) CreateResourcePolicy(ctx context.Context, token, realm, resourceID string, policy ResourcePolicyRepresentation) (*ResourcePolicyRepresentation, error) {
 	const errMessage = "could not create resource policy"
 
 	var result ResourcePolicyRepresentation
@@ -199,7 +199,7 @@ func (g *GoCloak) CreateResourcePolicy(ctx context.Context, token, realm, resour
 }
 
 // UpdateResourcePolicy updates a permission for a specific resource, using token obtained by Resource Owner Password Credentials Grant or Token exchange
-func (g *GoCloak) UpdateResourcePolicy(ctx context.Context, token, realm, permissionID string, policy ResourcePolicyRepresentation) error {
+func (g *GoKeycloak) UpdateResourcePolicy(ctx context.Context, token, realm, permissionID string, policy ResourcePolicyRepresentation) error {
 	const errMessage = "could not update resource policy"
 
 	resp, err := g.GetRequestWithBearerAuthNoCache(ctx, token).
@@ -210,7 +210,7 @@ func (g *GoCloak) UpdateResourcePolicy(ctx context.Context, token, realm, permis
 }
 
 // DeleteResourcePolicy deletes a permission for a specific resource, using token obtained by Resource Owner Password Credentials Grant or Token exchange
-func (g *GoCloak) DeleteResourcePolicy(ctx context.Context, token, realm, permissionID string) error {
+func (g *GoKeycloak) DeleteResourcePolicy(ctx context.Context, token, realm, permissionID string) error {
 	const errMessage = "could not  delete resource policy"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).

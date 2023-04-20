@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 )
 
 // GetScope returns a client's scope with the given id
-func (g *GoCloak) GetScope(ctx context.Context, token, realm, idOfClient, scopeID string) (*ScopeRepresentation, error) {
+func (g *GoKeycloak) GetScope(ctx context.Context, token, realm, idOfClient, scopeID string) (*ScopeRepresentation, error) {
 	const errMessage = "could not get scope"
 
 	var result ScopeRepresentation
@@ -23,7 +23,7 @@ func (g *GoCloak) GetScope(ctx context.Context, token, realm, idOfClient, scopeI
 }
 
 // GetScopes returns scopes associated with the client
-func (g *GoCloak) GetScopes(ctx context.Context, token, realm, idOfClient string, params GetScopeParams) ([]*ScopeRepresentation, error) {
+func (g *GoKeycloak) GetScopes(ctx context.Context, token, realm, idOfClient string, params GetScopeParams) ([]*ScopeRepresentation, error) {
 	const errMessage = "could not get scopes"
 
 	queryParams, err := GetQueryParams(params)
@@ -44,7 +44,7 @@ func (g *GoCloak) GetScopes(ctx context.Context, token, realm, idOfClient string
 }
 
 // CreateScope creates a scope associated with the client
-func (g *GoCloak) CreateScope(ctx context.Context, token, realm, idOfClient string, scope ScopeRepresentation) (*ScopeRepresentation, error) {
+func (g *GoKeycloak) CreateScope(ctx context.Context, token, realm, idOfClient string, scope ScopeRepresentation) (*ScopeRepresentation, error) {
 	const errMessage = "could not create scope"
 
 	var result ScopeRepresentation
@@ -61,7 +61,7 @@ func (g *GoCloak) CreateScope(ctx context.Context, token, realm, idOfClient stri
 }
 
 // UpdateScope updates a scope associated with the client
-func (g *GoCloak) UpdateScope(ctx context.Context, token, realm, idOfClient string, scope ScopeRepresentation) error {
+func (g *GoKeycloak) UpdateScope(ctx context.Context, token, realm, idOfClient string, scope ScopeRepresentation) error {
 	const errMessage = "could not update scope"
 
 	if NilOrEmpty(scope.ID) {
@@ -76,7 +76,7 @@ func (g *GoCloak) UpdateScope(ctx context.Context, token, realm, idOfClient stri
 }
 
 // DeleteScope deletes a scope associated with the client
-func (g *GoCloak) DeleteScope(ctx context.Context, token, realm, idOfClient, scopeID string) error {
+func (g *GoKeycloak) DeleteScope(ctx context.Context, token, realm, idOfClient, scopeID string) error {
 	const errMessage = "could not delete scope"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).

@@ -1,11 +1,11 @@
-package gocloak_test
+package gokeycloak_test
 
 import (
 	"encoding/json"
 	"errors"
 	"testing"
 
-	gocloak "github.com/sourabhmandal/gokeycloak/v1"
+	"github.com/sourabhmandal/gokeycloak"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -13,14 +13,14 @@ import (
 func TestStringOrArray_Unmarshal(t *testing.T) {
 	t.Parallel()
 	jsonString := []byte("\"123\"")
-	var dataString gocloak.StringOrArray
+	var dataString gokeycloak.StringOrArray
 	err := json.Unmarshal(jsonString, &dataString)
 	assert.NoErrorf(t, err, "Unmarshalling failed for json string: %s", jsonString)
 	assert.Len(t, dataString, 1)
 	assert.Equal(t, "123", dataString[0])
 
 	jsonArray := []byte("[\"1\",\"2\",\"3\"]")
-	var dataArray gocloak.StringOrArray
+	var dataArray gokeycloak.StringOrArray
 	err = json.Unmarshal(jsonArray, &dataArray)
 	assert.NoError(t, err, "Unmarshalling failed for json array of strings: %s", jsonArray)
 	assert.Len(t, dataArray, 3)
@@ -29,12 +29,12 @@ func TestStringOrArray_Unmarshal(t *testing.T) {
 
 func TestStringOrArray_Marshal(t *testing.T) {
 	t.Parallel()
-	dataString := gocloak.StringOrArray{"123"}
+	dataString := gokeycloak.StringOrArray{"123"}
 	jsonString, err := json.Marshal(&dataString)
 	assert.NoErrorf(t, err, "Marshaling failed for one string: %s", dataString)
 	assert.Equal(t, "\"123\"", string(jsonString))
 
-	dataArray := gocloak.StringOrArray{"1", "2", "3"}
+	dataArray := gokeycloak.StringOrArray{"1", "2", "3"}
 	jsonArray, err := json.Marshal(&dataArray)
 	assert.NoError(t, err, "Marshaling failed for array of strings: %s", dataArray)
 	assert.Equal(t, "[\"1\",\"2\",\"3\"]", string(jsonArray))
@@ -45,7 +45,7 @@ func TestEnforcedString_UnmarshalJSON(t *testing.T) {
 
 	type testData struct {
 		In  []byte
-		Out gocloak.EnforcedString
+		Out gokeycloak.EnforcedString
 	}
 
 	data := []testData{{
@@ -69,7 +69,7 @@ func TestEnforcedString_UnmarshalJSON(t *testing.T) {
 	}}
 
 	for _, d := range data {
-		var val gocloak.EnforcedString
+		var val gokeycloak.EnforcedString
 		err := json.Unmarshal(d.In, &val)
 		assert.NoErrorf(t, err, "Unmarshalling failed with data: %v", d.In)
 		assert.Equal(t, d.Out, val)
@@ -79,7 +79,7 @@ func TestEnforcedString_UnmarshalJSON(t *testing.T) {
 func TestEnforcedString_MarshalJSON(t *testing.T) {
 	t.Parallel()
 
-	data := gocloak.EnforcedString("foo")
+	data := gokeycloak.EnforcedString("foo")
 	jsonString, err := json.Marshal(&data)
 	assert.NoErrorf(t, err, "Unmarshalling failed with data: %v", data)
 	assert.Equal(t, `"foo"`, string(jsonString))
@@ -94,7 +94,7 @@ func TestGetQueryParams(t *testing.T) {
 		BoolField   *bool   `json:"bool_field,string,omitempty"`
 	}
 
-	params, err := gocloak.GetQueryParams(TestParams{})
+	params, err := gokeycloak.GetQueryParams(TestParams{})
 	assert.NoError(t, err)
 	assert.True(
 		t,
@@ -103,10 +103,10 @@ func TestGetQueryParams(t *testing.T) {
 		params,
 	)
 
-	params, err = gocloak.GetQueryParams(TestParams{
-		IntField:    gocloak.IntP(1),
-		StringField: gocloak.StringP("fake"),
-		BoolField:   gocloak.BoolP(true),
+	params, err = gokeycloak.GetQueryParams(TestParams{
+		IntField:    gokeycloak.IntP(1),
+		StringField: gokeycloak.StringP("fake"),
+		BoolField:   gokeycloak.BoolP(true),
 	})
 	assert.NoError(t, err)
 	assert.Equal(
@@ -119,9 +119,9 @@ func TestGetQueryParams(t *testing.T) {
 		params,
 	)
 
-	params, err = gocloak.GetQueryParams(TestParams{
-		StringField: gocloak.StringP("fake"),
-		BoolField:   gocloak.BoolP(false),
+	params, err = gokeycloak.GetQueryParams(TestParams{
+		StringField: gokeycloak.StringP("fake"),
+		BoolField:   gokeycloak.BoolP(false),
 	})
 	assert.NoError(t, err)
 	assert.Equal(
@@ -138,27 +138,27 @@ func TestParseAPIErrType(t *testing.T) {
 	testCases := []struct {
 		Name     string
 		Error    error
-		Expected gocloak.APIErrType
+		Expected gokeycloak.APIErrType
 	}{
 		{
 			Name:     "nil error",
 			Error:    nil,
-			Expected: gocloak.APIErrTypeUnknown,
+			Expected: gokeycloak.APIErrTypeUnknown,
 		},
 		{
 			Name:     "invalid grant",
 			Error:    errors.New("something something invalid_grant something"),
-			Expected: gocloak.APIErrTypeInvalidGrant,
+			Expected: gokeycloak.APIErrTypeInvalidGrant,
 		},
 		{
 			Name:     "other error",
 			Error:    errors.New("something something unsupported_grant_type something"),
-			Expected: gocloak.APIErrTypeUnknown,
+			Expected: gokeycloak.APIErrTypeUnknown,
 		},
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
-			result := gocloak.ParseAPIErrType(testCase.Error)
+			result := gokeycloak.ParseAPIErrType(testCase.Error)
 			if result != testCase.Expected {
 				t.Fatalf("expected %s but received %s", testCase.Expected, result)
 			}
@@ -169,14 +169,14 @@ func TestParseAPIErrType(t *testing.T) {
 func TestStringer(t *testing.T) {
 	// nested structs
 	actions := []string{"someAction", "anotherAction"}
-	access := gocloak.AccessRepresentation{
-		Manage:      gocloak.BoolP(true),
-		Impersonate: gocloak.BoolP(false),
+	access := gokeycloak.AccessRepresentation{
+		Manage:      gokeycloak.BoolP(true),
+		Impersonate: gokeycloak.BoolP(false),
 	}
-	v := gocloak.PermissionTicketDescriptionRepresentation{
-		ID:               gocloak.StringP("someID"),
-		CreatedTimeStamp: gocloak.Int64P(1607702613),
-		Enabled:          gocloak.BoolP(true),
+	v := gokeycloak.PermissionTicketDescriptionRepresentation{
+		ID:               gokeycloak.StringP("someID"),
+		CreatedTimeStamp: gokeycloak.Int64P(1607702613),
+		Enabled:          gokeycloak.BoolP(true),
 		RequiredActions:  &actions,
 		Access:           &access,
 	}
@@ -204,24 +204,24 @@ func TestStringer(t *testing.T) {
 	config["bar"] = "foo"
 	config["ping"] = "pong"
 
-	pmappers := []gocloak.ProtocolMapperRepresentation{
+	pmappers := []gokeycloak.ProtocolMapperRepresentation{
 		{
-			Name:   gocloak.StringP("someMapper"),
+			Name:   gokeycloak.StringP("someMapper"),
 			Config: &config,
 		},
 	}
-	clients := []gocloak.Client{
+	clients := []gokeycloak.Client{
 		{
-			Name:            gocloak.StringP("someClient"),
+			Name:            gokeycloak.StringP("someClient"),
 			ProtocolMappers: &pmappers,
 		},
 		{
-			Name: gocloak.StringP("AnotherClient"),
+			Name: gokeycloak.StringP("AnotherClient"),
 		},
 	}
 
-	realmRep := gocloak.RealmRepresentation{
-		DisplayName: gocloak.StringP("someRealm"),
+	realmRep := gokeycloak.RealmRepresentation{
+		DisplayName: gokeycloak.StringP("someRealm"),
 		Clients:     &clients,
 	}
 
@@ -255,86 +255,86 @@ type Stringable interface {
 
 func TestStringerOmitEmpty(t *testing.T) {
 	customs := []Stringable{
-		&gocloak.CertResponseKey{},
-		&gocloak.CertResponse{},
-		&gocloak.IssuerResponse{},
-		&gocloak.ResourcePermission{},
-		&gocloak.PermissionResource{},
-		&gocloak.PermissionScope{},
-		&gocloak.IntroSpectTokenResult{},
-		&gocloak.User{},
-		&gocloak.SetPasswordRequest{},
-		&gocloak.Component{},
-		&gocloak.KeyStoreConfig{},
-		&gocloak.ActiveKeys{},
-		&gocloak.Key{},
-		&gocloak.Attributes{},
-		&gocloak.Access{},
-		&gocloak.UserGroup{},
-		&gocloak.ExecuteActionsEmail{},
-		&gocloak.Group{},
-		&gocloak.GroupsCount{},
-		&gocloak.GetGroupsParams{},
-		&gocloak.CompositesRepresentation{},
-		&gocloak.Role{},
-		&gocloak.GetRoleParams{},
-		&gocloak.ClientMappingsRepresentation{},
-		&gocloak.MappingsRepresentation{},
-		&gocloak.ClientScope{},
-		&gocloak.ClientScopeAttributes{},
-		&gocloak.ProtocolMappers{},
-		&gocloak.ProtocolMappersConfig{},
-		&gocloak.Client{},
-		&gocloak.ResourceServerRepresentation{},
-		&gocloak.RoleDefinition{},
-		&gocloak.PolicyRepresentation{},
-		&gocloak.RolePolicyRepresentation{},
-		&gocloak.JSPolicyRepresentation{},
-		&gocloak.ClientPolicyRepresentation{},
-		&gocloak.TimePolicyRepresentation{},
-		&gocloak.UserPolicyRepresentation{},
-		&gocloak.AggregatedPolicyRepresentation{},
-		&gocloak.GroupPolicyRepresentation{},
-		&gocloak.GroupDefinition{},
-		&gocloak.ResourceRepresentation{},
-		&gocloak.ResourceOwnerRepresentation{},
-		&gocloak.ScopeRepresentation{},
-		&gocloak.ProtocolMapperRepresentation{},
-		&gocloak.UserInfoAddress{},
-		&gocloak.UserInfo{},
-		&gocloak.RolesRepresentation{},
-		&gocloak.RealmRepresentation{},
-		&gocloak.MultiValuedHashMap{},
-		&gocloak.TokenOptions{},
-		&gocloak.UserSessionRepresentation{},
-		&gocloak.SystemInfoRepresentation{},
-		&gocloak.MemoryInfoRepresentation{},
-		&gocloak.ServerInfoRepresentation{},
-		&gocloak.FederatedIdentityRepresentation{},
-		&gocloak.IdentityProviderRepresentation{},
-		&gocloak.GetResourceParams{},
-		&gocloak.GetScopeParams{},
-		&gocloak.GetPolicyParams{},
-		&gocloak.GetPermissionParams{},
-		&gocloak.GetUsersByRoleParams{},
-		&gocloak.PermissionRepresentation{},
-		&gocloak.CreatePermissionTicketParams{},
-		&gocloak.PermissionTicketDescriptionRepresentation{},
-		&gocloak.AccessRepresentation{},
-		&gocloak.PermissionTicketResponseRepresentation{},
-		&gocloak.PermissionTicketRepresentation{},
-		&gocloak.PermissionTicketPermissionRepresentation{},
-		&gocloak.PermissionGrantParams{},
-		&gocloak.PermissionGrantResponseRepresentation{},
-		&gocloak.GetUserPermissionParams{},
-		&gocloak.ResourcePolicyRepresentation{},
-		&gocloak.GetResourcePoliciesParams{},
-		&gocloak.CredentialRepresentation{},
-		&gocloak.GetUsersParams{},
-		&gocloak.GetComponentsParams{},
-		&gocloak.GetClientsParams{},
-		&gocloak.RequestingPartyTokenOptions{},
-		&gocloak.RequestingPartyPermission{},
+		&gokeycloak.CertResponseKey{},
+		&gokeycloak.CertResponse{},
+		&gokeycloak.IssuerResponse{},
+		&gokeycloak.ResourcePermission{},
+		&gokeycloak.PermissionResource{},
+		&gokeycloak.PermissionScope{},
+		&gokeycloak.IntroSpectTokenResult{},
+		&gokeycloak.User{},
+		&gokeycloak.SetPasswordRequest{},
+		&gokeycloak.Component{},
+		&gokeycloak.KeyStoreConfig{},
+		&gokeycloak.ActiveKeys{},
+		&gokeycloak.Key{},
+		&gokeycloak.Attributes{},
+		&gokeycloak.Access{},
+		&gokeycloak.UserGroup{},
+		&gokeycloak.ExecuteActionsEmail{},
+		&gokeycloak.Group{},
+		&gokeycloak.GroupsCount{},
+		&gokeycloak.GetGroupsParams{},
+		&gokeycloak.CompositesRepresentation{},
+		&gokeycloak.Role{},
+		&gokeycloak.GetRoleParams{},
+		&gokeycloak.ClientMappingsRepresentation{},
+		&gokeycloak.MappingsRepresentation{},
+		&gokeycloak.ClientScope{},
+		&gokeycloak.ClientScopeAttributes{},
+		&gokeycloak.ProtocolMappers{},
+		&gokeycloak.ProtocolMappersConfig{},
+		&gokeycloak.Client{},
+		&gokeycloak.ResourceServerRepresentation{},
+		&gokeycloak.RoleDefinition{},
+		&gokeycloak.PolicyRepresentation{},
+		&gokeycloak.RolePolicyRepresentation{},
+		&gokeycloak.JSPolicyRepresentation{},
+		&gokeycloak.ClientPolicyRepresentation{},
+		&gokeycloak.TimePolicyRepresentation{},
+		&gokeycloak.UserPolicyRepresentation{},
+		&gokeycloak.AggregatedPolicyRepresentation{},
+		&gokeycloak.GroupPolicyRepresentation{},
+		&gokeycloak.GroupDefinition{},
+		&gokeycloak.ResourceRepresentation{},
+		&gokeycloak.ResourceOwnerRepresentation{},
+		&gokeycloak.ScopeRepresentation{},
+		&gokeycloak.ProtocolMapperRepresentation{},
+		&gokeycloak.UserInfoAddress{},
+		&gokeycloak.UserInfo{},
+		&gokeycloak.RolesRepresentation{},
+		&gokeycloak.RealmRepresentation{},
+		&gokeycloak.MultiValuedHashMap{},
+		&gokeycloak.TokenOptions{},
+		&gokeycloak.UserSessionRepresentation{},
+		&gokeycloak.SystemInfoRepresentation{},
+		&gokeycloak.MemoryInfoRepresentation{},
+		&gokeycloak.ServerInfoRepresentation{},
+		&gokeycloak.FederatedIdentityRepresentation{},
+		&gokeycloak.IdentityProviderRepresentation{},
+		&gokeycloak.GetResourceParams{},
+		&gokeycloak.GetScopeParams{},
+		&gokeycloak.GetPolicyParams{},
+		&gokeycloak.GetPermissionParams{},
+		&gokeycloak.GetUsersByRoleParams{},
+		&gokeycloak.PermissionRepresentation{},
+		&gokeycloak.CreatePermissionTicketParams{},
+		&gokeycloak.PermissionTicketDescriptionRepresentation{},
+		&gokeycloak.AccessRepresentation{},
+		&gokeycloak.PermissionTicketResponseRepresentation{},
+		&gokeycloak.PermissionTicketRepresentation{},
+		&gokeycloak.PermissionTicketPermissionRepresentation{},
+		&gokeycloak.PermissionGrantParams{},
+		&gokeycloak.PermissionGrantResponseRepresentation{},
+		&gokeycloak.GetUserPermissionParams{},
+		&gokeycloak.ResourcePolicyRepresentation{},
+		&gokeycloak.GetResourcePoliciesParams{},
+		&gokeycloak.CredentialRepresentation{},
+		&gokeycloak.GetUsersParams{},
+		&gokeycloak.GetComponentsParams{},
+		&gokeycloak.GetClientsParams{},
+		&gokeycloak.RequestingPartyTokenOptions{},
+		&gokeycloak.RequestingPartyPermission{},
 	}
 
 	for _, custom := range customs {

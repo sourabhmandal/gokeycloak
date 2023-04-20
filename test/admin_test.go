@@ -1,4 +1,4 @@
-package gocloak_test
+package gokeycloak_test
 
 import (
 	"context"
@@ -19,7 +19,7 @@ func Test_LogoutAllSessions(t *testing.T) {
 	err := client.LogoutAllSessions(
 		context.Background(),
 		token.AccessToken,
-		cfg.GoCloak.Realm,
+		cfg.GoKeycloak.Realm,
 		userID,
 	)
 	require.NoError(t, err, "Logout failed")

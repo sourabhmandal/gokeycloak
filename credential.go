@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import "context"
 
@@ -7,7 +7,7 @@ import "context"
 // ---------------
 
 // GetCredentialRegistrators returns credentials registrators
-func (g *GoCloak) GetCredentialRegistrators(ctx context.Context, token, realm string) ([]string, error) {
+func (g *GoKeycloak) GetCredentialRegistrators(ctx context.Context, token, realm string) ([]string, error) {
 	const errMessage = "could not get user credential registrators"
 
 	var result []string
@@ -23,7 +23,7 @@ func (g *GoCloak) GetCredentialRegistrators(ctx context.Context, token, realm st
 }
 
 // GetConfiguredUserStorageCredentialTypes returns credential types, which are provided by the user storage where user is stored
-func (g *GoCloak) GetConfiguredUserStorageCredentialTypes(ctx context.Context, token, realm, userID string) ([]string, error) {
+func (g *GoKeycloak) GetConfiguredUserStorageCredentialTypes(ctx context.Context, token, realm, userID string) ([]string, error) {
 	const errMessage = "could not get user credential registrators"
 
 	var result []string
@@ -39,7 +39,7 @@ func (g *GoCloak) GetConfiguredUserStorageCredentialTypes(ctx context.Context, t
 }
 
 // GetCredentials returns credentials available for a given user
-func (g *GoCloak) GetCredentials(ctx context.Context, token, realm, userID string) ([]*CredentialRepresentation, error) {
+func (g *GoKeycloak) GetCredentials(ctx context.Context, token, realm, userID string) ([]*CredentialRepresentation, error) {
 	const errMessage = "could not get user credentials"
 
 	var result []*CredentialRepresentation
@@ -55,7 +55,7 @@ func (g *GoCloak) GetCredentials(ctx context.Context, token, realm, userID strin
 }
 
 // DeleteCredentials deletes the given credential for a given user
-func (g *GoCloak) DeleteCredentials(ctx context.Context, token, realm, userID, credentialID string) error {
+func (g *GoKeycloak) DeleteCredentials(ctx context.Context, token, realm, userID, credentialID string) error {
 	const errMessage = "could not delete user credentials"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -65,7 +65,7 @@ func (g *GoCloak) DeleteCredentials(ctx context.Context, token, realm, userID, c
 }
 
 // UpdateCredentialUserLabel updates label for the given credential for the given user
-func (g *GoCloak) UpdateCredentialUserLabel(ctx context.Context, token, realm, userID, credentialID, userLabel string) error {
+func (g *GoKeycloak) UpdateCredentialUserLabel(ctx context.Context, token, realm, userID, credentialID, userLabel string) error {
 	const errMessage = "could not update credential label for a user"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -77,7 +77,7 @@ func (g *GoCloak) UpdateCredentialUserLabel(ctx context.Context, token, realm, u
 }
 
 // DisableAllCredentialsByType disables all credentials for a user of a specific type
-func (g *GoCloak) DisableAllCredentialsByType(ctx context.Context, token, realm, userID string, types []string) error {
+func (g *GoKeycloak) DisableAllCredentialsByType(ctx context.Context, token, realm, userID string, types []string) error {
 	const errMessage = "could not update disable credentials"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -88,7 +88,7 @@ func (g *GoCloak) DisableAllCredentialsByType(ctx context.Context, token, realm,
 }
 
 // MoveCredentialBehind move a credential to a position behind another credential
-func (g *GoCloak) MoveCredentialBehind(ctx context.Context, token, realm, userID, credentialID, newPreviousCredentialID string) error {
+func (g *GoKeycloak) MoveCredentialBehind(ctx context.Context, token, realm, userID, credentialID, newPreviousCredentialID string) error {
 	const errMessage = "could not move credential"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -98,7 +98,7 @@ func (g *GoCloak) MoveCredentialBehind(ctx context.Context, token, realm, userID
 }
 
 // MoveCredentialToFirst move a credential to a first position in the credentials list of the user
-func (g *GoCloak) MoveCredentialToFirst(ctx context.Context, token, realm, userID, credentialID string) error {
+func (g *GoKeycloak) MoveCredentialToFirst(ctx context.Context, token, realm, userID, credentialID string) error {
 	const errMessage = "could not move credential"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).

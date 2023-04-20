@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 // ------------------
 
 // GetResource returns a client's resource with the given id, using access token from admin
-func (g *GoCloak) GetResource(ctx context.Context, token, realm, idOfClient, resourceID string) (*ResourceRepresentation, error) {
+func (g *GoKeycloak) GetResource(ctx context.Context, token, realm, idOfClient, resourceID string) (*ResourceRepresentation, error) {
 	const errMessage = "could not get resource"
 
 	var result ResourceRepresentation
@@ -27,7 +27,7 @@ func (g *GoCloak) GetResource(ctx context.Context, token, realm, idOfClient, res
 }
 
 // GetResourceClient returns a client's resource with the given id, using access token from client
-func (g *GoCloak) GetResourceClient(ctx context.Context, token, realm, resourceID string) (*ResourceRepresentation, error) {
+func (g *GoKeycloak) GetResourceClient(ctx context.Context, token, realm, resourceID string) (*ResourceRepresentation, error) {
 	const errMessage = "could not get resource"
 
 	var result ResourceRepresentation
@@ -45,7 +45,7 @@ func (g *GoCloak) GetResourceClient(ctx context.Context, token, realm, resourceI
 }
 
 // GetResources returns resources associated with the client, using access token from admin
-func (g *GoCloak) GetResources(ctx context.Context, token, realm, idOfClient string, params GetResourceParams) ([]*ResourceRepresentation, error) {
+func (g *GoKeycloak) GetResources(ctx context.Context, token, realm, idOfClient string, params GetResourceParams) ([]*ResourceRepresentation, error) {
 	const errMessage = "could not get resources"
 
 	queryParams, err := GetQueryParams(params)
@@ -67,7 +67,7 @@ func (g *GoCloak) GetResources(ctx context.Context, token, realm, idOfClient str
 }
 
 // GetResourcesClient returns resources associated with the client, using access token from client
-func (g *GoCloak) GetResourcesClient(ctx context.Context, token, realm string, params GetResourceParams) ([]*ResourceRepresentation, error) {
+func (g *GoKeycloak) GetResourcesClient(ctx context.Context, token, realm string, params GetResourceParams) ([]*ResourceRepresentation, error) {
 	const errMessage = "could not get resources"
 
 	queryParams, err := GetQueryParams(params)
@@ -97,7 +97,7 @@ func (g *GoCloak) GetResourcesClient(ctx context.Context, token, realm string, p
 }
 
 // UpdateResource updates a resource associated with the client, using access token from admin
-func (g *GoCloak) UpdateResource(ctx context.Context, token, realm, idOfClient string, resource ResourceRepresentation) error {
+func (g *GoKeycloak) UpdateResource(ctx context.Context, token, realm, idOfClient string, resource ResourceRepresentation) error {
 	const errMessage = "could not update resource"
 
 	if NilOrEmpty(resource.ID) {
@@ -112,7 +112,7 @@ func (g *GoCloak) UpdateResource(ctx context.Context, token, realm, idOfClient s
 }
 
 // UpdateResourceClient updates a resource associated with the client, using access token from client
-func (g *GoCloak) UpdateResourceClient(ctx context.Context, token, realm string, resource ResourceRepresentation) error {
+func (g *GoKeycloak) UpdateResourceClient(ctx context.Context, token, realm string, resource ResourceRepresentation) error {
 	const errMessage = "could not update resource"
 
 	if NilOrEmpty(resource.ID) {
@@ -127,7 +127,7 @@ func (g *GoCloak) UpdateResourceClient(ctx context.Context, token, realm string,
 }
 
 // CreateResource creates a resource associated with the client, using access token from admin
-func (g *GoCloak) CreateResource(ctx context.Context, token, realm string, idOfClient string, resource ResourceRepresentation) (*ResourceRepresentation, error) {
+func (g *GoKeycloak) CreateResource(ctx context.Context, token, realm string, idOfClient string, resource ResourceRepresentation) (*ResourceRepresentation, error) {
 	const errMessage = "could not create resource"
 
 	var result ResourceRepresentation
@@ -144,7 +144,7 @@ func (g *GoCloak) CreateResource(ctx context.Context, token, realm string, idOfC
 }
 
 // CreateResourceClient creates a resource associated with the client, using access token from client
-func (g *GoCloak) CreateResourceClient(ctx context.Context, token, realm string, resource ResourceRepresentation) (*ResourceRepresentation, error) {
+func (g *GoKeycloak) CreateResourceClient(ctx context.Context, token, realm string, resource ResourceRepresentation) (*ResourceRepresentation, error) {
 	const errMessage = "could not create resource"
 
 	var result ResourceRepresentation
@@ -161,7 +161,7 @@ func (g *GoCloak) CreateResourceClient(ctx context.Context, token, realm string,
 }
 
 // DeleteResource deletes a resource associated with the client (using an admin token)
-func (g *GoCloak) DeleteResource(ctx context.Context, token, realm, idOfClient, resourceID string) error {
+func (g *GoKeycloak) DeleteResource(ctx context.Context, token, realm, idOfClient, resourceID string) error {
 	const errMessage = "could not delete resource"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -171,7 +171,7 @@ func (g *GoCloak) DeleteResource(ctx context.Context, token, realm, idOfClient, 
 }
 
 // DeleteResourceClient deletes a resource associated with the client (using a client token)
-func (g *GoCloak) DeleteResourceClient(ctx context.Context, token, realm, resourceID string) error {
+func (g *GoKeycloak) DeleteResourceClient(ctx context.Context, token, realm, resourceID string) error {
 	const errMessage = "could not delete resource"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).

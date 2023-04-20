@@ -1,26 +1,26 @@
-package gocloak_test
+package gokeycloak_test
 
 import (
 	"context"
 	"testing"
 
-	gocloak "github.com/sourabhmandal/gokeycloak/v1"
+	"github.com/sourabhmandal/gokeycloak"
 	"github.com/stretchr/testify/assert"
 )
 
 func BenchmarkLogin(b *testing.B) {
 	cfg := GetConfig(b)
-	client := gocloak.NewClient(cfg.HostName)
+	client := gokeycloak.NewClient(cfg.HostName)
 	SetUpTestUser(b, client)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, err := client.Login(
 			context.Background(),
-			cfg.GoCloak.ClientID,
-			cfg.GoCloak.ClientSecret,
-			cfg.GoCloak.Realm,
-			cfg.GoCloak.UserName,
-			cfg.GoCloak.Password,
+			cfg.GoKeycloak.ClientID,
+			cfg.GoKeycloak.ClientSecret,
+			cfg.GoKeycloak.Realm,
+			cfg.GoKeycloak.UserName,
+			cfg.GoKeycloak.Password,
 		)
 		assert.NoError(b, err, "Failed %d", i)
 	}
@@ -28,18 +28,18 @@ func BenchmarkLogin(b *testing.B) {
 
 func BenchmarkLoginParallel(b *testing.B) {
 	cfg := GetConfig(b)
-	client := gocloak.NewClient(cfg.HostName)
+	client := gokeycloak.NewClient(cfg.HostName)
 	SetUpTestUser(b, client)
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
 			_, err := client.Login(
 				context.Background(),
-				cfg.GoCloak.ClientID,
-				cfg.GoCloak.ClientSecret,
-				cfg.GoCloak.Realm,
-				cfg.GoCloak.UserName,
-				cfg.GoCloak.Password,
+				cfg.GoKeycloak.ClientID,
+				cfg.GoKeycloak.ClientSecret,
+				cfg.GoKeycloak.Realm,
+				cfg.GoKeycloak.UserName,
+				cfg.GoKeycloak.Password,
 			)
 			assert.NoError(b, err)
 		}
@@ -48,15 +48,15 @@ func BenchmarkLoginParallel(b *testing.B) {
 
 func BenchmarkGetGroups(b *testing.B) {
 	cfg := GetConfig(b)
-	client := gocloak.NewClient(cfg.HostName)
+	client := gokeycloak.NewClient(cfg.HostName)
 	token := GetAdminToken(b, client)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, err := client.GetGroups(
 			context.Background(),
 			token.AccessToken,
-			cfg.GoCloak.Realm,
-			gocloak.GetGroupsParams{},
+			cfg.GoKeycloak.Realm,
+			gokeycloak.GetGroupsParams{},
 		)
 		assert.NoError(b, err)
 	}
@@ -64,17 +64,17 @@ func BenchmarkGetGroups(b *testing.B) {
 
 func BenchmarkGetGroupsFull(b *testing.B) {
 	cfg := GetConfig(b)
-	client := gocloak.NewClient(cfg.HostName)
+	client := gokeycloak.NewClient(cfg.HostName)
 	token := GetAdminToken(b, client)
-	params := gocloak.GetGroupsParams{
-		Full: gocloak.BoolP(true),
+	params := gokeycloak.GetGroupsParams{
+		Full: gokeycloak.BoolP(true),
 	}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, err := client.GetGroups(
 			context.Background(),
 			token.AccessToken,
-			cfg.GoCloak.Realm,
+			cfg.GoKeycloak.Realm,
 			params,
 		)
 		assert.NoError(b, err)
@@ -83,9 +83,9 @@ func BenchmarkGetGroupsFull(b *testing.B) {
 
 func BenchmarkGetGroupsBrief(b *testing.B) {
 	cfg := GetConfig(b)
-	client := gocloak.NewClient(cfg.HostName)
-	params := gocloak.GetGroupsParams{
-		BriefRepresentation: gocloak.BoolP(true),
+	client := gokeycloak.NewClient(cfg.HostName)
+	params := gokeycloak.GetGroupsParams{
+		BriefRepresentation: gokeycloak.BoolP(true),
 	}
 	token := GetAdminToken(b, client)
 	b.ResetTimer()
@@ -93,7 +93,7 @@ func BenchmarkGetGroupsBrief(b *testing.B) {
 		_, err := client.GetGroups(
 			context.Background(),
 			token.AccessToken,
-			cfg.GoCloak.Realm,
+			cfg.GoKeycloak.Realm,
 			params,
 		)
 		assert.NoError(b, err)
@@ -102,7 +102,7 @@ func BenchmarkGetGroupsBrief(b *testing.B) {
 
 func BenchmarkGetGroup(b *testing.B) {
 	cfg := GetConfig(b)
-	client := gocloak.NewClient(cfg.HostName)
+	client := gokeycloak.NewClient(cfg.HostName)
 	teardown, groupID := CreateGroup(b, client)
 	defer teardown()
 	token := GetAdminToken(b, client)
@@ -111,7 +111,7 @@ func BenchmarkGetGroup(b *testing.B) {
 		_, err := client.GetGroup(
 			context.Background(),
 			token.AccessToken,
-			cfg.GoCloak.Realm,
+			cfg.GoKeycloak.Realm,
 			groupID,
 		)
 		assert.NoError(b, err)
@@ -120,10 +120,10 @@ func BenchmarkGetGroup(b *testing.B) {
 
 func BenchmarkGetGroupByPath(b *testing.B) {
 	cfg := GetConfig(b)
-	client := gocloak.NewClient(cfg.HostName)
+	client := gokeycloak.NewClient(cfg.HostName)
 	teardown, groupID := CreateGroup(b, client)
 	token := GetAdminToken(b, client)
-	group, err := client.GetGroup(context.Background(), token.AccessToken, cfg.GoCloak.Realm, groupID)
+	group, err := client.GetGroup(context.Background(), token.AccessToken, cfg.GoKeycloak.Realm, groupID)
 	assert.NoError(b, err)
 	defer teardown()
 	b.ResetTimer()
@@ -131,7 +131,7 @@ func BenchmarkGetGroupByPath(b *testing.B) {
 		_, err := client.GetGroupByPath(
 			context.Background(),
 			token.AccessToken,
-			cfg.GoCloak.Realm,
+			cfg.GoKeycloak.Realm,
 			*group.Path,
 		)
 		assert.NoError(b, err)

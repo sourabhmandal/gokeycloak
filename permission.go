@@ -1,4 +1,4 @@
-package gocloak
+package gokeycloak
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 )
 
 // GetPermission returns a client's permission with the given id
-func (g *GoCloak) GetPermission(ctx context.Context, token, realm, idOfClient, permissionID string) (*PermissionRepresentation, error) {
+func (g *GoKeycloak) GetPermission(ctx context.Context, token, realm, idOfClient, permissionID string) (*PermissionRepresentation, error) {
 	const errMessage = "could not get permission"
 
 	var result PermissionRepresentation
@@ -24,7 +24,7 @@ func (g *GoCloak) GetPermission(ctx context.Context, token, realm, idOfClient, p
 }
 
 // GetDependentPermissions returns a client's permission with the given policy id
-func (g *GoCloak) GetDependentPermissions(ctx context.Context, token, realm, idOfClient, policyID string) ([]*PermissionRepresentation, error) {
+func (g *GoKeycloak) GetDependentPermissions(ctx context.Context, token, realm, idOfClient, policyID string) ([]*PermissionRepresentation, error) {
 	const errMessage = "could not get permission"
 
 	var result []*PermissionRepresentation
@@ -40,7 +40,7 @@ func (g *GoCloak) GetDependentPermissions(ctx context.Context, token, realm, idO
 }
 
 // GetPermissionResources returns a client's resource attached for the given permission id
-func (g *GoCloak) GetPermissionResources(ctx context.Context, token, realm, idOfClient, permissionID string) ([]*PermissionResource, error) {
+func (g *GoKeycloak) GetPermissionResources(ctx context.Context, token, realm, idOfClient, permissionID string) ([]*PermissionResource, error) {
 	const errMessage = "could not get permission resource"
 
 	var result []*PermissionResource
@@ -56,7 +56,7 @@ func (g *GoCloak) GetPermissionResources(ctx context.Context, token, realm, idOf
 }
 
 // GetPermissionScopes returns a client's scopes configured for the given permission id
-func (g *GoCloak) GetPermissionScopes(ctx context.Context, token, realm, idOfClient, permissionID string) ([]*PermissionScope, error) {
+func (g *GoKeycloak) GetPermissionScopes(ctx context.Context, token, realm, idOfClient, permissionID string) ([]*PermissionScope, error) {
 	const errMessage = "could not get permission scopes"
 
 	var result []*PermissionScope
@@ -72,7 +72,7 @@ func (g *GoCloak) GetPermissionScopes(ctx context.Context, token, realm, idOfCli
 }
 
 // GetPermissions returns permissions associated with the client
-func (g *GoCloak) GetPermissions(ctx context.Context, token, realm, idOfClient string, params GetPermissionParams) ([]*PermissionRepresentation, error) {
+func (g *GoKeycloak) GetPermissions(ctx context.Context, token, realm, idOfClient string, params GetPermissionParams) ([]*PermissionRepresentation, error) {
 	const errMessage = "could not get permissions"
 
 	queryParams, err := GetQueryParams(params)
@@ -118,7 +118,7 @@ func checkPermissionTicketParams(permissions []CreatePermissionTicketParams) err
 }
 
 // CreatePermissionTicket creates a permission ticket, using access token from client
-func (g *GoCloak) CreatePermissionTicket(ctx context.Context, token, realm string, permissions []CreatePermissionTicketParams) (*PermissionTicketResponseRepresentation, error) {
+func (g *GoKeycloak) CreatePermissionTicket(ctx context.Context, token, realm string, permissions []CreatePermissionTicketParams) (*PermissionTicketResponseRepresentation, error) {
 	const errMessage = "could not create permission ticket"
 
 	err := checkPermissionTicketParams(permissions)
@@ -155,7 +155,7 @@ func checkPermissionGrantParams(permission PermissionGrantParams) error {
 }
 
 // GrantUserPermission lets resource owner grant permission for specific resource ID to specific user ID
-func (g *GoCloak) GrantUserPermission(ctx context.Context, token, realm string, permission PermissionGrantParams) (*PermissionGrantResponseRepresentation, error) {
+func (g *GoKeycloak) GrantUserPermission(ctx context.Context, token, realm string, permission PermissionGrantParams) (*PermissionGrantResponseRepresentation, error) {
 	const errMessage = "could not grant user permission"
 
 	err := checkPermissionGrantParams(permission)
@@ -193,7 +193,7 @@ func checkPermissionUpdateParams(permission PermissionGrantParams) error {
 }
 
 // UpdateUserPermission updates user permissions.
-func (g *GoCloak) UpdateUserPermission(ctx context.Context, token, realm string, permission PermissionGrantParams) (*PermissionGrantResponseRepresentation, error) {
+func (g *GoKeycloak) UpdateUserPermission(ctx context.Context, token, realm string, permission PermissionGrantParams) (*PermissionGrantResponseRepresentation, error) {
 	const errMessage = "could not update user permission"
 
 	err := checkPermissionUpdateParams(permission)
@@ -220,7 +220,7 @@ func (g *GoCloak) UpdateUserPermission(ctx context.Context, token, realm string,
 }
 
 // GetUserPermissions gets granted permissions according query parameters
-func (g *GoCloak) GetUserPermissions(ctx context.Context, token, realm string, params GetUserPermissionParams) ([]*PermissionGrantResponseRepresentation, error) {
+func (g *GoKeycloak) GetUserPermissions(ctx context.Context, token, realm string, params GetUserPermissionParams) ([]*PermissionGrantResponseRepresentation, error) {
 	const errMessage = "could not get user permissions"
 
 	queryParams, err := GetQueryParams(params)
@@ -242,7 +242,7 @@ func (g *GoCloak) GetUserPermissions(ctx context.Context, token, realm string, p
 }
 
 // DeleteUserPermission revokes permissions according query parameters
-func (g *GoCloak) DeleteUserPermission(ctx context.Context, token, realm, ticketID string) error {
+func (g *GoKeycloak) DeleteUserPermission(ctx context.Context, token, realm, ticketID string) error {
 	const errMessage = "could not delete user permission"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -252,7 +252,7 @@ func (g *GoCloak) DeleteUserPermission(ctx context.Context, token, realm, ticket
 }
 
 // CreatePermission creates a permission associated with the client
-func (g *GoCloak) CreatePermission(ctx context.Context, token, realm, idOfClient string, permission PermissionRepresentation) (*PermissionRepresentation, error) {
+func (g *GoKeycloak) CreatePermission(ctx context.Context, token, realm, idOfClient string, permission PermissionRepresentation) (*PermissionRepresentation, error) {
 	const errMessage = "could not create permission"
 
 	if NilOrEmpty(permission.Type) {
@@ -273,7 +273,7 @@ func (g *GoCloak) CreatePermission(ctx context.Context, token, realm, idOfClient
 }
 
 // UpdatePermission updates a permission associated with the client
-func (g *GoCloak) UpdatePermission(ctx context.Context, token, realm, idOfClient string, permission PermissionRepresentation) error {
+func (g *GoKeycloak) UpdatePermission(ctx context.Context, token, realm, idOfClient string, permission PermissionRepresentation) error {
 	const errMessage = "could not update permission"
 
 	if NilOrEmpty(permission.ID) {
@@ -287,7 +287,7 @@ func (g *GoCloak) UpdatePermission(ctx context.Context, token, realm, idOfClient
 }
 
 // DeletePermission deletes a policy associated with the client
-func (g *GoCloak) DeletePermission(ctx context.Context, token, realm, idOfClient, permissionID string) error {
+func (g *GoKeycloak) DeletePermission(ctx context.Context, token, realm, idOfClient, permissionID string) error {
 	const errMessage = "could not delete permission"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).

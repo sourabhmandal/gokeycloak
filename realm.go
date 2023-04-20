@@ -1,21 +1,21 @@
-package gocloak
+package gokeycloak
 
 import "context"
 
-func (g *GoCloak) getRealmURL(realm string, path ...string) string {
+func (g *GoKeycloak) getRealmURL(realm string, path ...string) string {
 	path = append([]string{g.basePath, g.Config.authRealms, realm}, path...)
 	return makeURL(path...)
 }
 
 // SetAuthRealms sets the auth realm
-func SetAuthRealms(url string) func(g *GoCloak) {
-	return func(g *GoCloak) {
+func SetAuthRealms(url string) func(g *GoKeycloak) {
+	return func(g *GoKeycloak) {
 		g.Config.authRealms = url
 	}
 }
 
 // GetRealm returns top-level representation of the realm
-func (g *GoCloak) GetRealm(ctx context.Context, token, realm string) (*RealmRepresentation, error) {
+func (g *GoKeycloak) GetRealm(ctx context.Context, token, realm string) (*RealmRepresentation, error) {
 	const errMessage = "could not get realm"
 
 	var result RealmRepresentation
@@ -31,7 +31,7 @@ func (g *GoCloak) GetRealm(ctx context.Context, token, realm string) (*RealmRepr
 }
 
 // GetRealms returns top-level representation of all realms
-func (g *GoCloak) GetRealms(ctx context.Context, token string) ([]*RealmRepresentation, error) {
+func (g *GoKeycloak) GetRealms(ctx context.Context, token string) ([]*RealmRepresentation, error) {
 	const errMessage = "could not get realms"
 
 	var result []*RealmRepresentation
@@ -47,7 +47,7 @@ func (g *GoCloak) GetRealms(ctx context.Context, token string) ([]*RealmRepresen
 }
 
 // CreateRealm creates a realm
-func (g *GoCloak) CreateRealm(ctx context.Context, token string, realm RealmRepresentation) (string, error) {
+func (g *GoKeycloak) CreateRealm(ctx context.Context, token string, realm RealmRepresentation) (string, error) {
 	const errMessage = "could not create realm"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -61,7 +61,7 @@ func (g *GoCloak) CreateRealm(ctx context.Context, token string, realm RealmRepr
 }
 
 // UpdateRealm updates a given realm
-func (g *GoCloak) UpdateRealm(ctx context.Context, token string, realm RealmRepresentation) error {
+func (g *GoKeycloak) UpdateRealm(ctx context.Context, token string, realm RealmRepresentation) error {
 	const errMessage = "could not update realm"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -72,7 +72,7 @@ func (g *GoCloak) UpdateRealm(ctx context.Context, token string, realm RealmRepr
 }
 
 // DeleteRealm removes a realm
-func (g *GoCloak) DeleteRealm(ctx context.Context, token, realm string) error {
+func (g *GoKeycloak) DeleteRealm(ctx context.Context, token, realm string) error {
 	const errMessage = "could not delete realm"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -82,7 +82,7 @@ func (g *GoCloak) DeleteRealm(ctx context.Context, token, realm string) error {
 }
 
 // ClearRealmCache clears realm cache
-func (g *GoCloak) ClearRealmCache(ctx context.Context, token, realm string) error {
+func (g *GoKeycloak) ClearRealmCache(ctx context.Context, token, realm string) error {
 	const errMessage = "could not clear realm cache"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
