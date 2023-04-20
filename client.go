@@ -253,10 +253,11 @@ func (g *GoKeycloak) CreateComponent(ctx context.Context, token, realm string, c
 }
 
 // CreateClient creates the given g.
-func (g *GoKeycloak) CreateClient(ctx context.Context, accessToken, realm string, newClient Client) (string, error) {
+func (g *GoKeycloak) CreateClient(ctx context.Context, clientInitialAccessToken, realm string, newClient Client) (string, error) {
 	const errMessage = "could not create client"
 
-	resp, err := g.GetRequestWithBearerAuth(ctx, accessToken).
+	// create a client
+	resp, err := g.GetRequestWithBearerAuth(ctx, clientInitialAccessToken).
 		SetBody(newClient).
 		Post(g.getAdminRealmURL(realm, "clients"))
 
