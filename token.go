@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Nerzal/gocloak/v13/pkg/jwx"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/pkg/errors"
+	"github.com/sourabhmandal/gokeycloak/v1/pkg/jwx"
 )
 
 // GetIssuer gets the issuer of the given realm

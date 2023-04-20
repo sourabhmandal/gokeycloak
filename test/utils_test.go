@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/Nerzal/gocloak/v13"
+	gocloak "github.com/sourabhmandal/gokeycloak/v1"
 )
 
 func TestStringP(t *testing.T) {

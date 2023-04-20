@@ -2058,7 +2058,7 @@ func Test_GetGroupsByClientRole(t *testing.T) {
 
 	role, _ := client.GetClientRole(ctx, token.AccessToken, cfg.GoCloak.Realm, gocloakClientID, roleName)
 
-	_ = client.AddClientRoleToGroup(ctx, token.AccessToken, cfg.GoCloak.Realm, gocloakClientID, groupID, []gocloak.Role{*role})
+	_ = client.AddClientRolesToGroup(ctx, token.AccessToken, cfg.GoCloak.Realm, gocloakClientID, groupID, []gocloak.Role{*role})
 
 	groupsByClientRole, err := client.GetGroupsByClientRole(ctx, token.AccessToken, cfg.GoCloak.Realm, roleName, gocloakClientID)
 	require.NoError(t, err, "GetGroupsByClientRole failed")

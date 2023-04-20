@@ -34,7 +34,7 @@ linters-settings:
 issues:
   exclude-use-default: false
   exclude-rules:
-    - path: _test\.go
+    - path: test/**
       linters:
         - gocyclo
         - dupl
