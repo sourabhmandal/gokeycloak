@@ -2,7 +2,6 @@ package gokeycloak
 
 import (
 	"context"
-	"time"
 )
 
 func (g *GoKeycloak) getAdminRealmURL(realm string, path ...string) string {
@@ -71,28 +70,5 @@ func (g *GoKeycloak) SendVerifyEmail(ctx context.Context, token, userID, realm s
 		SetQueryParams(queryParams).
 		Put(g.getAdminRealmURL(realm, "users", userID, "send-verify-email"))
 
-	return checkForError(resp, err, errMessage)
-}
-
-
-func (g *GoKeycloak) GenerateClientInitialAccessToken(ctx context.Context, realm string, adminAccessToken string, requestBody *ClientInitialAccessTokenRequest) error {
-	const errMessage = "could not generate client initial access token"
-
-	var request *ClientInitialAccessTokenRequest = requestBody
-
-	if(request.Count < 1) {
-		request.Count = 1
-	}
-	if(request.Expiration < time.Now().Add(time.Minute).Second()){
-		request.Expiration = time.Now().Add(time.Minute * 5).Second()
-	}
-
-	var result *ClientInitialAccessTokenResponse
-
-
-	resp, err := g.GetRequestWithBearerAuth(ctx, adminAccessToken).
-	SetBody(request).
-	SetResult(&result).
-	Post(	g.getRealmURL(realm, "clients-initial-access"))
 	return checkForError(resp, err, errMessage)
 }
