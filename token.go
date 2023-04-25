@@ -69,3 +69,18 @@ func (g *GoKeycloak) DecodeAccessToken(ctx context.Context, accessToken, realm s
 func (g *GoKeycloak) DecodeAccessTokenCustomClaims(ctx context.Context, accessToken, realm string, claims jwt.Claims) (*jwt.Token, error) {
 	return g.decodeAccessTokenWithClaims(ctx, accessToken, realm, claims)
 }
+
+// URL: {{keycloak_url}}/realms/{{realm}}/protocol/openid-connect/token
+// GetRequestingPartyToken returns a requesting party token with permissions granted by the server
+func (g *GoKeycloak) GetRequestingPartyToken(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*JWT, error) {
+	const errMessage = "could not get requesting party token"
+
+	var res JWT
+
+	resp, err := g.getRequestingParty(ctx, token, realm, options, &res)
+	if err := checkForError(resp, err, errMessage); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}

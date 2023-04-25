@@ -16,21 +16,6 @@ func (g *GoKeycloak) getRequestingParty(ctx context.Context, token, realm string
 		Post(g.getRealmURL(realm, g.Config.openIDConnect, "token"))
 }
 
-// URL: {{keycloak_url}}/realms/{{realm}}/protocol/openid-connect/token
-// GetRequestingPartyToken returns a requesting party token with permissions granted by the server
-func (g *GoKeycloak) GetRequestingPartyToken(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*JWT, error) {
-	const errMessage = "could not get requesting party token"
-
-	var res JWT
-
-	resp, err := g.getRequestingParty(ctx, token, realm, options, &res)
-	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
-	}
-
-	return &res, nil
-}
-
 // GetRequestingPartyPermissions returns a requesting party permissions granted by the server
 func (g *GoKeycloak) GetRequestingPartyPermissions(ctx context.Context, token, realm string, options RequestingPartyTokenOptions) (*[]RequestingPartyPermission, error) {
 	const errMessage = "could not get requesting party token"
@@ -43,7 +28,6 @@ func (g *GoKeycloak) GetRequestingPartyPermissions(ctx context.Context, token, r
 	if err := checkForError(resp, err, errMessage); err != nil {
 		return nil, err
 	}
-
 	return &res, nil
 }
 
@@ -377,4 +361,21 @@ func (g *GoKeycloak) GetAvailableRealmRolesByGroupID(ctx context.Context, token,
 	}
 
 	return result, nil
+}
+
+func (g *GoKeycloak) EvaluatePermission(ctx context.Context, userToken, realm, audience, response_mode string, permissions []string) (*JWT, error) {
+	var permission_token_grant string = "urn:ietf:params:oauth:grant-type:uma-ticket"
+	var options RequestingPartyTokenOptions = RequestingPartyTokenOptions{
+  	GrantType: &permission_token_grant,
+		Audience: &audience,
+		ResponseMode: &response_mode,
+		Permissions: &permissions,		
+	}
+	
+	jwt, err := g.GetRequestingPartyToken(ctx, userToken, realm, options)
+	if err != nil {
+		return nil, err
+	}
+
+	return jwt, nil
 }

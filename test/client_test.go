@@ -7,7 +7,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"os"
@@ -344,10 +343,10 @@ func CreateClient(t *testing.T, client *gokeycloak.GoKeycloak, newClient *gokeyc
 			context.Background(),
 			token.AccessToken,
 			cfg.GoKeycloak.Realm,
-			createdID,
+			createdID.ClientID,
 		)
 	}
-	return tearDown, createdID
+	return tearDown, createdID.ClientID
 }
 
 func SetUpTestUser(t testing.TB, client *gokeycloak.GoKeycloak) {
@@ -781,7 +780,7 @@ func Test_LoginSignedJWT(t *testing.T) {
 	defer func() {
 		require.NoError(t, f.Close())
 	}()
-	pfxData, err := ioutil.ReadAll(f)
+	pfxData, err := io.ReadAll(f)
 	require.NoError(t, err)
 	pKey, cert, err := pkcs12.Decode(pfxData, "secret")
 	require.NoError(t, err)
