@@ -14,7 +14,7 @@ func Test_GetUserInfo(t *testing.T) {
 	client := NewClientWithDebug(t)
 	SetUpTestUser(t, client)
 	token := GetUserToken(t, client)
-	userInfo, err := client.GetUserInfo(
+	_, userInfo, err := client.GetUserInfo(
 		context.Background(),
 		token.AccessToken,
 		cfg.GoKeycloak.Realm,
@@ -22,7 +22,7 @@ func Test_GetUserInfo(t *testing.T) {
 	require.NoError(t, err, "Failed to fetch userinfo")
 	t.Log(userInfo)
 	FailRequest(client, nil, 1, 0)
-	_, err = client.GetUserInfo(
+	_, _, err = client.GetUserInfo(
 		context.Background(),
 		token.AccessToken,
 		cfg.GoKeycloak.Realm)
@@ -35,7 +35,7 @@ func Test_GetRawUserInfo(t *testing.T) {
 	client := NewClientWithDebug(t)
 	SetUpTestUser(t, client)
 	token := GetUserToken(t, client)
-	userInfo, err := client.GetUserInfo(
+	_, userInfo, err := client.GetUserInfo(
 		context.Background(),
 		token.AccessToken,
 		cfg.GoKeycloak.Realm,
@@ -50,7 +50,7 @@ func Test_GetToken(t *testing.T) {
 	cfg := GetConfig(t)
 	client := NewClientWithDebug(t)
 	SetUpTestUser(t, client)
-	newToken, err := client.GetToken(
+	_, newToken, err := client.GetToken(
 		context.Background(),
 		cfg.GoKeycloak.Realm,
 		gokeycloak.TokenOptions{
@@ -71,7 +71,7 @@ func Test_GetToken(t *testing.T) {
 
 func GetClientToken(t *testing.T, client *gokeycloak.GoKeycloak) *gokeycloak.JWT {
 	cfg := GetConfig(t)
-	token, err := client.LoginClient(
+	_, token, err := client.LoginClient(
 		context.Background(),
 		cfg.GoKeycloak.ClientID,
 		cfg.GoKeycloak.ClientSecret,
@@ -83,7 +83,7 @@ func GetClientToken(t *testing.T, client *gokeycloak.GoKeycloak) *gokeycloak.JWT
 func GetUserToken(t *testing.T, client *gokeycloak.GoKeycloak) *gokeycloak.JWT {
 	SetUpTestUser(t, client)
 	cfg := GetConfig(t)
-	token, err := client.Login(
+	_, token, err := client.Login(
 		context.Background(),
 		cfg.GoKeycloak.ClientID,
 		cfg.GoKeycloak.ClientSecret,
@@ -96,7 +96,7 @@ func GetUserToken(t *testing.T, client *gokeycloak.GoKeycloak) *gokeycloak.JWT {
 
 func GetAdminToken(t testing.TB, client *gokeycloak.GoKeycloak) *gokeycloak.JWT {
 	cfg := GetConfig(t)
-	token, err := client.LoginAdmin(
+	_, token, err := client.LoginAdmin(
 		context.Background(),
 		cfg.Admin.UserName,
 		cfg.Admin.Password,
@@ -111,7 +111,7 @@ func Test_RevokeToken(t *testing.T) {
 	client := NewClientWithDebug(t)
 	SetUpTestUser(t, client)
 	token := GetUserToken(t, client)
-	err := client.RevokeToken(
+	_, err := client.RevokeToken(
 		context.Background(),
 		cfg.GoKeycloak.Realm,
 		cfg.GoKeycloak.ClientID,
@@ -126,7 +126,7 @@ func Test_RetrospectRequestingPartyToken(t *testing.T) {
 	cfg := GetConfig(t)
 	client := NewClientWithDebug(t)
 	SetUpTestUser(t, client)
-	token, err := client.Login(
+	_, token, err := client.Login(
 		context.Background(),
 		cfg.GoKeycloak.ClientID,
 		cfg.GoKeycloak.ClientSecret,
@@ -135,7 +135,7 @@ func Test_RetrospectRequestingPartyToken(t *testing.T) {
 		cfg.GoKeycloak.Password)
 	require.NoError(t, err, "login failed")
 
-	rpt, err := client.GetRequestingPartyToken(
+	_, rpt, err := client.GetRequestingPartyToken(
 		context.Background(),
 		token.AccessToken,
 		cfg.GoKeycloak.Realm,
@@ -148,7 +148,7 @@ func Test_RetrospectRequestingPartyToken(t *testing.T) {
 	require.Error(t, err, "GetRequestingPartyToken must fail with Fake resource")
 	require.Nil(t, rpt)
 
-	rpt, err = client.GetRequestingPartyToken(
+	_, rpt, err = client.GetRequestingPartyToken(
 		context.Background(),
 		token.AccessToken,
 		cfg.GoKeycloak.Realm,
@@ -161,7 +161,7 @@ func Test_RetrospectRequestingPartyToken(t *testing.T) {
 	require.NoError(t, err, "GetRequestingPartyToken failed")
 	require.NotNil(t, rpt)
 
-	rptResult, err := client.IntrospectToken(
+	_, rptResult, err := client.IntrospectToken(
 		context.Background(),
 		rpt.AccessToken,
 		cfg.GoKeycloak.ClientID,
@@ -203,7 +203,7 @@ func Test_Logout(t *testing.T) {
 	client := NewClientWithDebug(t)
 	token := GetUserToken(t, client)
 
-	err := client.Logout(
+	_, err := client.Logout(
 		context.Background(),
 		cfg.GoKeycloak.ClientID,
 		cfg.GoKeycloak.ClientSecret,

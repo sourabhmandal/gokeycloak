@@ -3,6 +3,7 @@ package gokeycloak
 import (
 	"context"
 	"io"
+	"net/http"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/segmentio/ksuid"
@@ -10,7 +11,7 @@ import (
 )
 
 // LoginAdmin performs a login with Admin client
-func (g *GoKeycloak) LoginAdmin(ctx context.Context, username, password, realm string) (*JWT, error) {
+func (g *GoKeycloak) LoginAdmin(ctx context.Context, username, password, realm string) (int, *JWT, error) {
 	return g.GetToken(ctx, realm, TokenOptions{
 		ClientID:  StringP(adminClientID),
 		GrantType: StringP("password"),
@@ -20,7 +21,7 @@ func (g *GoKeycloak) LoginAdmin(ctx context.Context, username, password, realm s
 }
 
 // LoginClient performs a login with client credentials
-func (g *GoKeycloak) LoginClient(ctx context.Context, clientID, clientSecret, realm string) (*JWT, error) {
+func (g *GoKeycloak) LoginClient(ctx context.Context, clientID, clientSecret, realm string) (int, *JWT, error) {
 	return g.GetToken(ctx, realm, TokenOptions{
 		ClientID:     &clientID,
 		ClientSecret: &clientSecret,
@@ -30,7 +31,7 @@ func (g *GoKeycloak) LoginClient(ctx context.Context, clientID, clientSecret, re
 
 // LoginClientTokenExchange will exchange the presented token for a user's token
 // Requires Token-Exchange is enabled: https://www.keycloak.org/docs/latest/securing_apps/index.html#_token-exchange
-func (g *GoKeycloak) LoginClientTokenExchange(ctx context.Context, clientID, token, clientSecret, realm, targetClient, userID string) (*JWT, error) {
+func (g *GoKeycloak) LoginClientTokenExchange(ctx context.Context, clientID, token, clientSecret, realm, targetClient, userID string) (int, *JWT, error) {
 	tokenOptions := TokenOptions{
 		ClientID:           &clientID,
 		ClientSecret:       &clientSecret,
@@ -53,7 +54,7 @@ func (g *GoKeycloak) LoginClientSignedJWT(
 	key interface{},
 	signedMethod jwt.SigningMethod,
 	expiresAt *jwt.NumericDate,
-) (*JWT, error) {
+) (int, *JWT, error) {
 	claims := jwt.RegisteredClaims{
 		ExpiresAt: expiresAt,
 		Issuer:    clientID,
@@ -65,7 +66,7 @@ func (g *GoKeycloak) LoginClientSignedJWT(
 	}
 	assertion, err := jwx.SignClaims(claims, key, signedMethod)
 	if err != nil {
-		return nil, err
+		return http.StatusInternalServerError, nil, err
 	}
 
 	return g.GetToken(ctx, realm, TokenOptions{
@@ -77,7 +78,7 @@ func (g *GoKeycloak) LoginClientSignedJWT(
 }
 
 // Login performs a login with user credentials and a client
-func (g *GoKeycloak) Login(ctx context.Context, clientID, clientSecret, realm, username, password string) (*JWT, error) {
+func (g *GoKeycloak) Login(ctx context.Context, clientID, clientSecret, realm, username, password string) (int, *JWT, error) {
 	return g.GetToken(ctx, realm, TokenOptions{
 		ClientID:     &clientID,
 		ClientSecret: &clientSecret,
@@ -89,7 +90,7 @@ func (g *GoKeycloak) Login(ctx context.Context, clientID, clientSecret, realm, u
 }
 
 // LoginOtp performs a login with user credentials and otp token
-func (g *GoKeycloak) LoginOtp(ctx context.Context, clientID, clientSecret, realm, username, password, totp string) (*JWT, error) {
+func (g *GoKeycloak) LoginOtp(ctx context.Context, clientID, clientSecret, realm, username, password, totp string) (int, *JWT, error) {
 	return g.GetToken(ctx, realm, TokenOptions{
 		ClientID:     &clientID,
 		ClientSecret: &clientSecret,

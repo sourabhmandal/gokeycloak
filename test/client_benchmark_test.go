@@ -14,7 +14,7 @@ func BenchmarkLogin(b *testing.B) {
 	SetUpTestUser(b, client)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := client.Login(
+		_, _, err := client.Login(
 			context.Background(),
 			cfg.GoKeycloak.ClientID,
 			cfg.GoKeycloak.ClientSecret,
@@ -33,7 +33,7 @@ func BenchmarkLoginParallel(b *testing.B) {
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			_, err := client.Login(
+			_, _, err := client.Login(
 				context.Background(),
 				cfg.GoKeycloak.ClientID,
 				cfg.GoKeycloak.ClientSecret,
@@ -52,7 +52,7 @@ func BenchmarkGetGroups(b *testing.B) {
 	token := GetAdminToken(b, client)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := client.GetGroups(
+		_, _, err := client.GetGroups(
 			context.Background(),
 			token.AccessToken,
 			cfg.GoKeycloak.Realm,
@@ -71,7 +71,7 @@ func BenchmarkGetGroupsFull(b *testing.B) {
 	}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := client.GetGroups(
+		_, _, err := client.GetGroups(
 			context.Background(),
 			token.AccessToken,
 			cfg.GoKeycloak.Realm,
@@ -90,7 +90,7 @@ func BenchmarkGetGroupsBrief(b *testing.B) {
 	token := GetAdminToken(b, client)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := client.GetGroups(
+		_, _, err := client.GetGroups(
 			context.Background(),
 			token.AccessToken,
 			cfg.GoKeycloak.Realm,
@@ -108,7 +108,7 @@ func BenchmarkGetGroup(b *testing.B) {
 	token := GetAdminToken(b, client)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := client.GetGroup(
+		_, _, err := client.GetGroup(
 			context.Background(),
 			token.AccessToken,
 			cfg.GoKeycloak.Realm,
@@ -123,12 +123,12 @@ func BenchmarkGetGroupByPath(b *testing.B) {
 	client := gokeycloak.NewClient(cfg.HostName)
 	teardown, groupID := CreateGroup(b, client)
 	token := GetAdminToken(b, client)
-	group, err := client.GetGroup(context.Background(), token.AccessToken, cfg.GoKeycloak.Realm, groupID)
+	_, group, err := client.GetGroup(context.Background(), token.AccessToken, cfg.GoKeycloak.Realm, groupID)
 	assert.NoError(b, err)
 	defer teardown()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := client.GetGroupByPath(
+		_, _, err := client.GetGroupByPath(
 			context.Background(),
 			token.AccessToken,
 			cfg.GoKeycloak.Realm,

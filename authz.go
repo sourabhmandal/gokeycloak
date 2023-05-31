@@ -363,7 +363,7 @@ func (g *GoKeycloak) GetAvailableRealmRolesByGroupID(ctx context.Context, token,
 	return result, nil
 }
 
-func (g *GoKeycloak) EvaluatePermission(ctx context.Context, userToken, realm, audience, response_mode string, permissions []string) (*JWT, error) {
+func (g *GoKeycloak) EvaluatePermission(ctx context.Context, userToken, realm, audience, response_mode string, permissions []string) (int, *JWT, error) {
 	var permission_token_grant string = "urn:ietf:params:oauth:grant-type:uma-ticket"
 	var options RequestingPartyTokenOptions = RequestingPartyTokenOptions{
   	GrantType: &permission_token_grant,
@@ -372,10 +372,10 @@ func (g *GoKeycloak) EvaluatePermission(ctx context.Context, userToken, realm, a
 		Permissions: &permissions,		
 	}
 	
-	jwt, err := g.GetRequestingPartyToken(ctx, userToken, realm, options)
+	statusCode, jwt, err := g.GetRequestingPartyToken(ctx, userToken, realm, options)
 	if err != nil {
-		return nil, err
+		return statusCode, nil, err
 	}
 
-	return jwt, nil
+	return statusCode, jwt, nil
 }

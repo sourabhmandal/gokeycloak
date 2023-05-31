@@ -21,7 +21,7 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 	cfg := GetConfig(t)
 	client := NewClientWithDebug(t)
 	token := GetAdminToken(t, client)
-	realm, err := client.GetRealm(
+	_, realm, err := client.GetRealm(
 		context.Background(),
 		token.AccessToken,
 		cfg.GoKeycloak.Realm)
@@ -31,7 +31,7 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 	updatedRealm.BruteForceProtected = gokeycloak.BoolP(true)
 	updatedRealm.FailureFactor = gokeycloak.IntP(1)
 	updatedRealm.MaxFailureWaitSeconds = gokeycloak.IntP(2)
-	err = client.UpdateRealm(
+	_, err = client.UpdateRealm(
 		context.Background(),
 		token.AccessToken,
 		*updatedRealm)
@@ -39,7 +39,7 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 
 	tearDownUser, userID := CreateUser(t, client)
 	defer tearDownUser()
-	err = client.SetPassword(
+	_, err = client.SetPassword(
 		context.Background(),
 		token.AccessToken,
 		userID,
@@ -48,14 +48,14 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 		false)
 	require.NoError(t, err, "CreateUser failed")
 
-	fetchedUser, err := client.GetUserByID(
+	_, fetchedUser, err := client.GetUserByID(
 		context.Background(),
 		token.AccessToken,
 		cfg.GoKeycloak.Realm,
 		userID)
 	require.NoError(t, err, "GetUserById failed")
 
-	_, err = client.Login(context.Background(),
+	_, _, err = client.Login(context.Background(),
 		cfg.GoKeycloak.ClientID,
 		cfg.GoKeycloak.ClientSecret,
 		*realm.ID,
@@ -72,7 +72,7 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 	require.Equal(t, true, *bruteForceStatus.Disabled, "The user shouldn be locked")
 
 	time.Sleep(2 * time.Second)
-	_, err = client.Login(
+	_, _, err = client.Login(
 		context.Background(),
 		cfg.GoKeycloak.ClientID,
 		cfg.GoKeycloak.ClientSecret,
@@ -90,7 +90,7 @@ func Test_GetUserBruteForceDetectionStatus(t *testing.T) {
 	require.Equal(t, 0, *bruteForceStatus.NumFailures, "Should return zero failures")
 	require.Equal(t, false, *bruteForceStatus.Disabled, "The user shouldn't be locked")
 
-	err = client.UpdateRealm(
+	_, err = client.UpdateRealm(
 		context.Background(),
 		token.AccessToken,
 		*realm)

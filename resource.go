@@ -2,6 +2,7 @@ package gokeycloak
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/pkg/errors"
 )
@@ -11,7 +12,7 @@ import (
 // ------------------
 
 // GetResource returns a client's resource with the given id, using access token from admin
-func (g *GoKeycloak) GetResource(ctx context.Context, token, realm, idOfClient, resourceID string) (*ResourceRepresentation, error) {
+func (g *GoKeycloak) GetResource(ctx context.Context, token, realm, idOfClient, resourceID string) (int, *ResourceRepresentation, error) {
 	const errMessage = "could not get resource"
 
 	var result ResourceRepresentation
@@ -20,14 +21,14 @@ func (g *GoKeycloak) GetResource(ctx context.Context, token, realm, idOfClient, 
 		Get(g.getAdminRealmURL(realm, "clients", idOfClient, "authz", "resource-server", "resource", resourceID))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return &result, nil
+	return resp.StatusCode(), &result, nil
 }
 
 // GetResourceClient returns a client's resource with the given id, using access token from client
-func (g *GoKeycloak) GetResourceClient(ctx context.Context, token, realm, resourceID string) (*ResourceRepresentation, error) {
+func (g *GoKeycloak) GetResourceClient(ctx context.Context, token, realm, resourceID string) (int, *ResourceRepresentation, error) {
 	const errMessage = "could not get resource"
 
 	var result ResourceRepresentation
@@ -38,19 +39,19 @@ func (g *GoKeycloak) GetResourceClient(ctx context.Context, token, realm, resour
 	// http://${host}:${port}/auth/realms/${realm_name}/authz/protection/resource_set/{resource_id}
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return &result, nil
+	return resp.StatusCode(), &result, nil
 }
 
 // GetResources returns resources associated with the client, using access token from admin
-func (g *GoKeycloak) GetResources(ctx context.Context, token, realm, idOfClient string, params GetResourceParams) ([]*ResourceRepresentation, error) {
+func (g *GoKeycloak) GetResources(ctx context.Context, token, realm, idOfClient string, params GetResourceParams) (int, []*ResourceRepresentation, error) {
 	const errMessage = "could not get resources"
 
 	queryParams, err := GetQueryParams(params)
 	if err != nil {
-		return nil, err
+		return http.StatusBadRequest, nil, err
 	}
 
 	var result []*ResourceRepresentation
@@ -60,19 +61,19 @@ func (g *GoKeycloak) GetResources(ctx context.Context, token, realm, idOfClient 
 		Get(g.getAdminRealmURL(realm, "clients", idOfClient, "authz", "resource-server", "resource"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // GetResourcesClient returns resources associated with the client, using access token from client
-func (g *GoKeycloak) GetResourcesClient(ctx context.Context, token, realm string, params GetResourceParams) ([]*ResourceRepresentation, error) {
+func (g *GoKeycloak) GetResourcesClient(ctx context.Context, token, realm string, params GetResourceParams) (int, []*ResourceRepresentation, error) {
 	const errMessage = "could not get resources"
 
 	queryParams, err := GetQueryParams(params)
 	if err != nil {
-		return nil, err
+		return http.StatusBadRequest, nil, err
 	}
 
 	var result []*ResourceRepresentation
@@ -83,51 +84,51 @@ func (g *GoKeycloak) GetResourcesClient(ctx context.Context, token, realm string
 		Get(g.getRealmURL(realm, "authz", "protection", "resource_set"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
 	for _, resourceID := range resourceIDs {
-		resource, err := g.GetResourceClient(ctx, token, realm, resourceID)
+		_, resource, err := g.GetResourceClient(ctx, token, realm, resourceID)
 		if err == nil {
 			result = append(result, resource)
 		}
 	}
 
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // UpdateResource updates a resource associated with the client, using access token from admin
-func (g *GoKeycloak) UpdateResource(ctx context.Context, token, realm, idOfClient string, resource ResourceRepresentation) error {
+func (g *GoKeycloak) UpdateResource(ctx context.Context, token, realm, idOfClient string, resource ResourceRepresentation) (int, error) {
 	const errMessage = "could not update resource"
 
 	if NilOrEmpty(resource.ID) {
-		return errors.New("ID of a resource required")
+		return http.StatusBadRequest, errors.New("ID of a resource required")
 	}
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		SetBody(resource).
 		Put(g.getAdminRealmURL(realm, "clients", idOfClient, "authz", "resource-server", "resource", *(resource.ID)))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // UpdateResourceClient updates a resource associated with the client, using access token from client
-func (g *GoKeycloak) UpdateResourceClient(ctx context.Context, token, realm string, resource ResourceRepresentation) error {
+func (g *GoKeycloak) UpdateResourceClient(ctx context.Context, token, realm string, resource ResourceRepresentation) (int, error) {
 	const errMessage = "could not update resource"
 
 	if NilOrEmpty(resource.ID) {
-		return errors.New("ID of a resource required")
+		return http.StatusBadRequest, errors.New("ID of a resource required")
 	}
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		SetBody(resource).
 		Put(g.getRealmURL(realm, "authz", "protection", "resource_set", *(resource.ID)))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // CreateResource creates a resource associated with the client, using access token from admin
-func (g *GoKeycloak) CreateResource(ctx context.Context, token, realm string, idOfClient string, resource ResourceRepresentation) (*ResourceRepresentation, error) {
+func (g *GoKeycloak) CreateResource(ctx context.Context, token, realm string, idOfClient string, resource ResourceRepresentation) (int, *ResourceRepresentation, error) {
 	const errMessage = "could not create resource"
 
 	var result ResourceRepresentation
@@ -137,14 +138,14 @@ func (g *GoKeycloak) CreateResource(ctx context.Context, token, realm string, id
 		Post(g.getAdminRealmURL(realm, "clients", idOfClient, "authz", "resource-server", "resource"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return &result, nil
+	return resp.StatusCode(), &result, nil
 }
 
 // CreateResourceClient creates a resource associated with the client, using access token from client
-func (g *GoKeycloak) CreateResourceClient(ctx context.Context, token, realm string, resource ResourceRepresentation) (*ResourceRepresentation, error) {
+func (g *GoKeycloak) CreateResourceClient(ctx context.Context, token, realm string, resource ResourceRepresentation) (int, *ResourceRepresentation, error) {
 	const errMessage = "could not create resource"
 
 	var result ResourceRepresentation
@@ -154,28 +155,28 @@ func (g *GoKeycloak) CreateResourceClient(ctx context.Context, token, realm stri
 		Post(g.getRealmURL(realm, "authz", "protection", "resource_set"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return &result, nil
+	return resp.StatusCode(), &result, nil
 }
 
 // DeleteResource deletes a resource associated with the client (using an admin token)
-func (g *GoKeycloak) DeleteResource(ctx context.Context, token, realm, idOfClient, resourceID string) error {
+func (g *GoKeycloak) DeleteResource(ctx context.Context, token, realm, idOfClient, resourceID string) (int, error) {
 	const errMessage = "could not delete resource"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		Delete(g.getAdminRealmURL(realm, "clients", idOfClient, "authz", "resource-server", "resource", resourceID))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // DeleteResourceClient deletes a resource associated with the client (using a client token)
-func (g *GoKeycloak) DeleteResourceClient(ctx context.Context, token, realm, resourceID string) error {
+func (g *GoKeycloak) DeleteResourceClient(ctx context.Context, token, realm, resourceID string) (int, error) {
 	const errMessage = "could not delete resource"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		Delete(g.getRealmURL(realm, "authz", "protection", "resource_set", resourceID))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
