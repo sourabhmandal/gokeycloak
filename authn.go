@@ -7,7 +7,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/segmentio/ksuid"
-	"github.com/sourabhmandal/gokeycloak/pkg/jwx"
+	"github.com/zblocks/gokeycloak/pkg/jwx"
 )
 
 // LoginAdmin performs a login with Admin client
@@ -102,7 +102,7 @@ func (g *GoKeycloak) LoginOtp(ctx context.Context, clientID, clientSecret, realm
 }
 
 // GetAuthenticationFlows get all authentication flows from a realm
-func (g *GoKeycloak) GetAuthenticationFlows(ctx context.Context, token, realm string) ([]*AuthenticationFlowRepresentation, error) {
+func (g *GoKeycloak) GetAuthenticationFlows(ctx context.Context, token, realm string) (int, []*AuthenticationFlowRepresentation, error) {
 	const errMessage = "could not retrieve authentication flows"
 	var result []*AuthenticationFlowRepresentation
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -110,13 +110,13 @@ func (g *GoKeycloak) GetAuthenticationFlows(ctx context.Context, token, realm st
 		Get(g.getAdminRealmURL(realm, "authentication", "flows"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // GetAuthenticationFlow get an authentication flow with the given ID
-func (g *GoKeycloak) GetAuthenticationFlow(ctx context.Context, token, realm string, authenticationFlowID string) (*AuthenticationFlowRepresentation, error) {
+func (g *GoKeycloak) GetAuthenticationFlow(ctx context.Context, token, realm string, authenticationFlowID string) (int, *AuthenticationFlowRepresentation, error) {
 	const errMessage = "could not retrieve authentication flows"
 	var result *AuthenticationFlowRepresentation
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -124,24 +124,24 @@ func (g *GoKeycloak) GetAuthenticationFlow(ctx context.Context, token, realm str
 		Get(g.getAdminRealmURL(realm, "authentication", "flows", authenticationFlowID))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // CreateAuthenticationFlow creates a new Authentication flow in a realm
-func (g *GoKeycloak) CreateAuthenticationFlow(ctx context.Context, token, realm string, flow AuthenticationFlowRepresentation) error {
+func (g *GoKeycloak) CreateAuthenticationFlow(ctx context.Context, token, realm string, flow AuthenticationFlowRepresentation) (int, error) {
 	const errMessage = "could not create authentication flows"
 	var result []*AuthenticationFlowRepresentation
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		SetResult(&result).SetBody(flow).
 		Post(g.getAdminRealmURL(realm, "authentication", "flows"))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // UpdateAuthenticationFlow a given Authentication Flow
-func (g *GoKeycloak) UpdateAuthenticationFlow(ctx context.Context, token, realm string, flow AuthenticationFlowRepresentation, authenticationFlowID string) (*AuthenticationFlowRepresentation, error) {
+func (g *GoKeycloak) UpdateAuthenticationFlow(ctx context.Context, token, realm string, flow AuthenticationFlowRepresentation, authenticationFlowID string) (int, *AuthenticationFlowRepresentation, error) {
 	const errMessage = "could not create authentication flows"
 	var result *AuthenticationFlowRepresentation
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -149,22 +149,22 @@ func (g *GoKeycloak) UpdateAuthenticationFlow(ctx context.Context, token, realm 
 		Put(g.getAdminRealmURL(realm, "authentication", "flows", authenticationFlowID))
 
 	if err = checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // DeleteAuthenticationFlow deletes a flow in a realm with the given ID
-func (g *GoKeycloak) DeleteAuthenticationFlow(ctx context.Context, token, realm, flowID string) error {
+func (g *GoKeycloak) DeleteAuthenticationFlow(ctx context.Context, token, realm, flowID string) (int, error) {
 	const errMessage = "could not delete authentication flows"
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		Delete(g.getAdminRealmURL(realm, "authentication", "flows", flowID))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // GetAuthenticationExecutions retrieves all executions of a given flow
-func (g *GoKeycloak) GetAuthenticationExecutions(ctx context.Context, token, realm, flow string) ([]*ModifyAuthenticationExecutionRepresentation, error) {
+func (g *GoKeycloak) GetAuthenticationExecutions(ctx context.Context, token, realm, flow string) (int, []*ModifyAuthenticationExecutionRepresentation, error) {
 	const errMessage = "could not retrieve authentication flows"
 	var result []*ModifyAuthenticationExecutionRepresentation
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -172,45 +172,45 @@ func (g *GoKeycloak) GetAuthenticationExecutions(ctx context.Context, token, rea
 		Get(g.getAdminRealmURL(realm, "authentication", "flows", flow, "executions"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // CreateAuthenticationExecution creates a new execution for the given flow name in the given realm
-func (g *GoKeycloak) CreateAuthenticationExecution(ctx context.Context, token, realm, flow string, execution CreateAuthenticationExecutionRepresentation) error {
+func (g *GoKeycloak) CreateAuthenticationExecution(ctx context.Context, token, realm, flow string, execution CreateAuthenticationExecutionRepresentation) (int, error) {
 	const errMessage = "could not create authentication execution"
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).SetBody(execution).
 		Post(g.getAdminRealmURL(realm, "authentication", "flows", flow, "executions", "execution"))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // UpdateAuthenticationExecution updates an authentication execution for the given flow in the given realm
-func (g *GoKeycloak) UpdateAuthenticationExecution(ctx context.Context, token, realm, flow string, execution ModifyAuthenticationExecutionRepresentation) error {
+func (g *GoKeycloak) UpdateAuthenticationExecution(ctx context.Context, token, realm, flow string, execution ModifyAuthenticationExecutionRepresentation) (int, error) {
 	const errMessage = "could not update authentication execution"
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).SetBody(execution).
 		Put(g.getAdminRealmURL(realm, "authentication", "flows", flow, "executions"))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // DeleteAuthenticationExecution delete a single execution with the given ID
-func (g *GoKeycloak) DeleteAuthenticationExecution(ctx context.Context, token, realm, executionID string) error {
+func (g *GoKeycloak) DeleteAuthenticationExecution(ctx context.Context, token, realm, executionID string) (int, error) {
 	const errMessage = "could not delete authentication execution"
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		Delete(g.getAdminRealmURL(realm, "authentication", "executions", executionID))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // CreateAuthenticationExecutionFlow creates a new execution for the given flow name in the given realm
-func (g *GoKeycloak) CreateAuthenticationExecutionFlow(ctx context.Context, token, realm, flow string, executionFlow CreateAuthenticationExecutionFlowRepresentation) error {
+func (g *GoKeycloak) CreateAuthenticationExecutionFlow(ctx context.Context, token, realm, flow string, executionFlow CreateAuthenticationExecutionFlowRepresentation) (int, error) {
 	const errMessage = "could not create authentication execution flow"
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).SetBody(executionFlow).
 		Post(g.getAdminRealmURL(realm, "authentication", "flows", flow, "executions", "flow"))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // ------------------
@@ -218,7 +218,7 @@ func (g *GoKeycloak) CreateAuthenticationExecutionFlow(ctx context.Context, toke
 // ------------------
 
 // CreateIdentityProvider creates an identity provider in a realm
-func (g *GoKeycloak) CreateIdentityProvider(ctx context.Context, token string, realm string, providerRep IdentityProviderRepresentation) (string, error) {
+func (g *GoKeycloak) CreateIdentityProvider(ctx context.Context, token string, realm string, providerRep IdentityProviderRepresentation) (int, string, error) {
 	const errMessage = "could not create identity provider"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -226,14 +226,14 @@ func (g *GoKeycloak) CreateIdentityProvider(ctx context.Context, token string, r
 		Post(g.getAdminRealmURL(realm, "identity-provider", "instances"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return "", err
+		return resp.StatusCode(), "", err
 	}
 
-	return getID(resp), nil
+	return resp.StatusCode(), getID(resp), nil
 }
 
 // GetIdentityProviders returns list of identity providers in a realm
-func (g *GoKeycloak) GetIdentityProviders(ctx context.Context, token, realm string) ([]*IdentityProviderRepresentation, error) {
+func (g *GoKeycloak) GetIdentityProviders(ctx context.Context, token, realm string) (int, []*IdentityProviderRepresentation, error) {
 	const errMessage = "could not get identity providers"
 
 	var result []*IdentityProviderRepresentation
@@ -242,14 +242,14 @@ func (g *GoKeycloak) GetIdentityProviders(ctx context.Context, token, realm stri
 		Get(g.getAdminRealmURL(realm, "identity-provider", "instances"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // GetIdentityProvider gets the identity provider in a realm
-func (g *GoKeycloak) GetIdentityProvider(ctx context.Context, token, realm, alias string) (*IdentityProviderRepresentation, error) {
+func (g *GoKeycloak) GetIdentityProvider(ctx context.Context, token, realm, alias string) (int, *IdentityProviderRepresentation, error) {
 	const errMessage = "could not get identity provider"
 
 	var result IdentityProviderRepresentation
@@ -258,50 +258,50 @@ func (g *GoKeycloak) GetIdentityProvider(ctx context.Context, token, realm, alia
 		Get(g.getAdminRealmURL(realm, "identity-provider", "instances", alias))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return &result, nil
+	return resp.StatusCode(), &result, nil
 }
 
 // UpdateIdentityProvider updates the identity provider in a realm
-func (g *GoKeycloak) UpdateIdentityProvider(ctx context.Context, token, realm, alias string, providerRep IdentityProviderRepresentation) error {
+func (g *GoKeycloak) UpdateIdentityProvider(ctx context.Context, token, realm, alias string, providerRep IdentityProviderRepresentation) (int, error) {
 	const errMessage = "could not update identity provider"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		SetBody(providerRep).
 		Put(g.getAdminRealmURL(realm, "identity-provider", "instances", alias))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // DeleteIdentityProvider deletes the identity provider in a realm
-func (g *GoKeycloak) DeleteIdentityProvider(ctx context.Context, token, realm, alias string) error {
+func (g *GoKeycloak) DeleteIdentityProvider(ctx context.Context, token, realm, alias string) (int, error) {
 	const errMessage = "could not delete identity provider"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		Delete(g.getAdminRealmURL(realm, "identity-provider", "instances", alias))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // ExportIDPPublicBrokerConfig exports the broker config for a given alias
-func (g *GoKeycloak) ExportIDPPublicBrokerConfig(ctx context.Context, token, realm, alias string) (*string, error) {
+func (g *GoKeycloak) ExportIDPPublicBrokerConfig(ctx context.Context, token, realm, alias string) (int, *string, error) {
 	const errMessage = "could not get public identity provider configuration"
 
 	resp, err := g.GetRequestWithBearerAuthXMLHeader(ctx, token).
 		Get(g.getAdminRealmURL(realm, "identity-provider", "instances", alias, "export"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
 	result := resp.String()
-	return &result, nil
+	return resp.StatusCode(), &result, nil
 }
 
 // ImportIdentityProviderConfig parses and returns the identity provider config at a given URL
-func (g *GoKeycloak) ImportIdentityProviderConfig(ctx context.Context, token, realm, fromURL, providerID string) (map[string]string, error) {
+func (g *GoKeycloak) ImportIdentityProviderConfig(ctx context.Context, token, realm, fromURL, providerID string) (int, map[string]string, error) {
 	const errMessage = "could not import config"
 
 	result := make(map[string]string)
@@ -314,14 +314,14 @@ func (g *GoKeycloak) ImportIdentityProviderConfig(ctx context.Context, token, re
 		Post(g.getAdminRealmURL(realm, "identity-provider", "import-config"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // ImportIdentityProviderConfigFromFile parses and returns the identity provider config from a given file
-func (g *GoKeycloak) ImportIdentityProviderConfigFromFile(ctx context.Context, token, realm, providerID, fileName string, fileBody io.Reader) (map[string]string, error) {
+func (g *GoKeycloak) ImportIdentityProviderConfigFromFile(ctx context.Context, token, realm, providerID, fileName string, fileBody io.Reader) (int, map[string]string, error) {
 	const errMessage = "could not import config"
 
 	result := make(map[string]string)
@@ -334,14 +334,14 @@ func (g *GoKeycloak) ImportIdentityProviderConfigFromFile(ctx context.Context, t
 		Post(g.getAdminRealmURL(realm, "identity-provider", "import-config"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // CreateIdentityProviderMapper creates an instance of an identity provider mapper associated with the given alias
-func (g *GoKeycloak) CreateIdentityProviderMapper(ctx context.Context, token, realm, alias string, mapper IdentityProviderMapper) (string, error) {
+func (g *GoKeycloak) CreateIdentityProviderMapper(ctx context.Context, token, realm, alias string, mapper IdentityProviderMapper) (int, string, error) {
 	const errMessage = "could not create mapper for identity provider"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
@@ -349,14 +349,14 @@ func (g *GoKeycloak) CreateIdentityProviderMapper(ctx context.Context, token, re
 		Post(g.getAdminRealmURL(realm, "identity-provider", "instances", alias, "mappers"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return "", err
+		return resp.StatusCode(), "", err
 	}
 
-	return getID(resp), nil
+	return resp.StatusCode(), getID(resp), nil
 }
 
 // GetIdentityProviderMapper gets the mapper by id for the given identity provider alias in a realm
-func (g *GoKeycloak) GetIdentityProviderMapper(ctx context.Context, token string, realm string, alias string, mapperID string) (*IdentityProviderMapper, error) {
+func (g *GoKeycloak) GetIdentityProviderMapper(ctx context.Context, token string, realm string, alias string, mapperID string) (int, *IdentityProviderMapper, error) {
 	const errMessage = "could not get identity provider mapper"
 
 	result := IdentityProviderMapper{}
@@ -365,24 +365,24 @@ func (g *GoKeycloak) GetIdentityProviderMapper(ctx context.Context, token string
 		Get(g.getAdminRealmURL(realm, "identity-provider", "instances", alias, "mappers", mapperID))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return &result, nil
+	return resp.StatusCode(), &result, nil
 }
 
 // DeleteIdentityProviderMapper deletes an instance of an identity provider mapper associated with the given alias and mapper ID
-func (g *GoKeycloak) DeleteIdentityProviderMapper(ctx context.Context, token, realm, alias, mapperID string) error {
+func (g *GoKeycloak) DeleteIdentityProviderMapper(ctx context.Context, token, realm, alias, mapperID string) (int, error) {
 	const errMessage = "could not delete mapper for identity provider"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		Delete(g.getAdminRealmURL(realm, "identity-provider", "instances", alias, "mappers", mapperID))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // GetIdentityProviderMappers returns list of mappers associated with an identity provider
-func (g *GoKeycloak) GetIdentityProviderMappers(ctx context.Context, token, realm, alias string) ([]*IdentityProviderMapper, error) {
+func (g *GoKeycloak) GetIdentityProviderMappers(ctx context.Context, token, realm, alias string) (int, []*IdentityProviderMapper, error) {
 	const errMessage = "could not get identity provider mappers"
 
 	var result []*IdentityProviderMapper
@@ -391,14 +391,14 @@ func (g *GoKeycloak) GetIdentityProviderMappers(ctx context.Context, token, real
 		Get(g.getAdminRealmURL(realm, "identity-provider", "instances", alias, "mappers"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // GetIdentityProviderMapperByID gets the mapper of an identity provider
-func (g *GoKeycloak) GetIdentityProviderMapperByID(ctx context.Context, token, realm, alias, mapperID string) (*IdentityProviderMapper, error) {
+func (g *GoKeycloak) GetIdentityProviderMapperByID(ctx context.Context, token, realm, alias, mapperID string) (int, *IdentityProviderMapper, error) {
 	const errMessage = "could not get identity provider mappers"
 
 	var result IdentityProviderMapper
@@ -407,19 +407,19 @@ func (g *GoKeycloak) GetIdentityProviderMapperByID(ctx context.Context, token, r
 		Get(g.getAdminRealmURL(realm, "identity-provider", "instances", alias, "mappers", mapperID))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return &result, nil
+	return resp.StatusCode(), &result, nil
 }
 
 // UpdateIdentityProviderMapper updates mapper of an identity provider
-func (g *GoKeycloak) UpdateIdentityProviderMapper(ctx context.Context, token, realm, alias string, mapper IdentityProviderMapper) error {
+func (g *GoKeycloak) UpdateIdentityProviderMapper(ctx context.Context, token, realm, alias string, mapper IdentityProviderMapper) (int, error) {
 	const errMessage = "could not update identity provider mapper"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, token).
 		SetBody(mapper).
 		Put(g.getAdminRealmURL(realm, "identity-provider", "instances", alias, "mappers", PString(mapper.ID)))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }

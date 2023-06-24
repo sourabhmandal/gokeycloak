@@ -8,7 +8,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/pkg/errors"
-	"github.com/sourabhmandal/gokeycloak/pkg/jwx"
+	"github.com/zblocks/gokeycloak/pkg/jwx"
 )
 
 // GetIssuer gets the issuer of the given realm

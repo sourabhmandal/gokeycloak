@@ -23,7 +23,7 @@ linters-settings:
   govet:
     check-shadowing: false
   goimports:
-    local-prefixes: github.com/sourabhmandal/gokeycloak
+    local-prefixes: github.com/zblocks/gokeycloak
   gocognit:
     min-complexity: 15
   gocyclo:

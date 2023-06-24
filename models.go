@@ -409,6 +409,7 @@ type ClientScope struct {
 	ID                    *string                `json:"id,omitempty"`
 	Name                  *string                `json:"name,omitempty"`
 	Description           *string                `json:"description,omitempty"`
+	Type                  *string                `json:"type,omitempty"`
 	Protocol              *string                `json:"protocol,omitempty"`
 	ClientScopeAttributes *ClientScopeAttributes `json:"attributes,omitempty"`
 	ProtocolMappers       *[]ProtocolMappers     `json:"protocolMappers,omitempty"`
@@ -419,6 +420,7 @@ type ClientScopeAttributes struct {
 	ConsentScreenText      *string `json:"consent.screen.text,omitempty"`
 	DisplayOnConsentScreen *string `json:"display.on.consent.screen,omitempty"`
 	IncludeInTokenScope    *string `json:"include.in.token.scope,omitempty"`
+	GuiOrder               *string `json:"gui.order,omitempty"`
 }
 
 // ProtocolMappers are protocolmappers
@@ -452,42 +454,42 @@ type ProtocolMappersConfig struct {
 // Client is a ClientRepresentation
 type Client struct {
 	Access                             *map[string]interface{}         `json:"access,omitempty"`
-	AdminURL                           *string                         `json:"adminUrl,omitempty"`
+	AdminURL                           *string                         `json:"admin_url,omitempty"`
 	Attributes                         *map[string]string              `json:"attributes,omitempty"`
-	AuthenticationFlowBindingOverrides *map[string]string              `json:"authenticationFlowBindingOverrides,omitempty"`
-	AuthorizationServicesEnabled       *bool                           `json:"authorizationServicesEnabled,omitempty"`
-	AuthorizationSettings              *ResourceServerRepresentation   `json:"authorizationSettings,omitempty"`
-	BaseURL                            *string                         `json:"baseUrl,omitempty"`
-	BearerOnly                         *bool                           `json:"bearerOnly,omitempty"`
-	ClientAuthenticatorType            *string                         `json:"clientAuthenticatorType,omitempty"`
-	ClientID                           *string                         `json:"clientId,omitempty"`
-	ConsentRequired                    *bool                           `json:"consentRequired,omitempty"`
-	DefaultClientScopes                *[]string                       `json:"defaultClientScopes,omitempty"`
-	DefaultRoles                       *[]string                       `json:"defaultRoles,omitempty"`
+	AuthenticationFlowBindingOverrides *map[string]string              `json:"authentication_flowBinding_overrides,omitempty"`
+	AuthorizationServicesEnabled       *bool                           `json:"authorization_services_enabled,omitempty"`
+	AuthorizationSettings              *ResourceServerRepresentation   `json:"authorization_settings,omitempty"`
+	BaseURL                            *string                         `json:"base_url,omitempty"`
+	BearerOnly                         *bool                           `json:"bearer_only,omitempty"`
+	ClientAuthenticatorType            *string                         `json:"client_authenticator_type,omitempty"`
+	ClientID                           *string                         `json:"client_id,omitempty"`
+	ConsentRequired                    *bool                           `json:"consent_required,omitempty"`
+	DefaultClientScopes                *[]string                       `json:"default_client_scopes,omitempty"`
+	DefaultRoles                       *[]string                       `json:"default_roles,omitempty"`
 	Description                        *string                         `json:"description,omitempty"`
-	DirectAccessGrantsEnabled          *bool                           `json:"directAccessGrantsEnabled,omitempty"`
+	DirectAccessGrantsEnabled          *bool                           `json:"direct_access_grants_enabled,omitempty"`
 	Enabled                            *bool                           `json:"enabled,omitempty"`
-	FrontChannelLogout                 *bool                           `json:"frontchannelLogout,omitempty"`
-	FullScopeAllowed                   *bool                           `json:"fullScopeAllowed,omitempty"`
+	FrontChannelLogout                 *bool                           `json:"frontchannel_logout,omitempty"`
+	FullScopeAllowed                   *bool                           `json:"fullScope_allowed,omitempty"`
 	ID                                 *string                         `json:"id,omitempty"`
-	ImplicitFlowEnabled                *bool                           `json:"implicitFlowEnabled,omitempty"`
+	ImplicitFlowEnabled                *bool                           `json:"implicit_flow_enabled,omitempty"`
 	Name                               *string                         `json:"name,omitempty"`
-	NodeReRegistrationTimeout          *int32                          `json:"nodeReRegistrationTimeout,omitempty"`
-	NotBefore                          *int32                          `json:"notBefore,omitempty"`
-	OptionalClientScopes               *[]string                       `json:"optionalClientScopes,omitempty"`
+	NodeReRegistrationTimeout          *int32                          `json:"node_re_registration_timeout,omitempty"`
+	NotBefore                          *int32                          `json:"not_before,omitempty"`
+	OptionalClientScopes               *[]string                       `json:"optional_client_scopes,omitempty"`
 	Origin                             *string                         `json:"origin,omitempty"`
 	Protocol                           *string                         `json:"protocol,omitempty"`
-	ProtocolMappers                    *[]ProtocolMapperRepresentation `json:"protocolMappers,omitempty"`
-	PublicClient                       *bool                           `json:"publicClient,omitempty"`
-	RedirectURIs                       *[]string                       `json:"redirectUris,omitempty"`
-	RegisteredNodes                    *map[string]int                 `json:"registeredNodes,omitempty"`
-	RegistrationAccessToken            *string                         `json:"registrationAccessToken,omitempty"`
-	RootURL                            *string                         `json:"rootUrl,omitempty"`
+	ProtocolMappers                    *[]ProtocolMapperRepresentation `json:"protocol_mappers,omitempty"`
+	PublicClient                       *bool                           `json:"public_client,omitempty"`
+	RedirectURIs                       *[]string                       `json:"redirect_uris,omitempty"`
+	RegisteredNodes                    *map[string]int                 `json:"registered_nodes,omitempty"`
+	RegistrationAccessToken            *string                         `json:"registration_access_token,omitempty"`
+	RootURL                            *string                         `json:"root_url,omitempty"`
 	Secret                             *string                         `json:"secret,omitempty"`
-	ServiceAccountsEnabled             *bool                           `json:"serviceAccountsEnabled,omitempty"`
-	StandardFlowEnabled                *bool                           `json:"standardFlowEnabled,omitempty"`
-	SurrogateAuthRequired              *bool                           `json:"surrogateAuthRequired,omitempty"`
-	WebOrigins                         *[]string                       `json:"webOrigins,omitempty"`
+	ServiceAccountsEnabled             *bool                           `json:"service_accounts_enabled,omitempty"`
+	StandardFlowEnabled                *bool                           `json:"standard_flow_enabled,omitempty"`
+	SurrogateAuthRequired              *bool                           `json:"surrogate_auth_required,omitempty"`
+	WebOrigins                         *[]string                       `json:"web_origins,omitempty"`
 }
 
 // ResourceServerRepresentation represents the resources of a Server
@@ -662,8 +664,8 @@ type ProtocolMapperRepresentation struct {
 	ID              *string            `json:"id,omitempty"`
 	Name            *string            `json:"name,omitempty"`
 	Protocol        *string            `json:"protocol,omitempty"`
-	ProtocolMapper  *string            `json:"protocolMapper,omitempty"`
-	ConsentRequired *bool              `json:"consentRequired,omitempty"`
+	ProtocolMapper  *string            `json:"protocol_mapper,omitempty"`
+	ConsentRequired *bool              `json:"consent_required,omitempty"`
 }
 
 // GetClientsParams represents the query parameters

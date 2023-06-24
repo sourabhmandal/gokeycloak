@@ -16,7 +16,7 @@ func Test_LogoutAllSessions(t *testing.T) {
 	tearDown, userID := CreateUser(t, client)
 	defer tearDown()
 
-	err := client.LogoutAllSessions(
+	_, err := client.LogoutAllSessions(
 		context.Background(),
 		token.AccessToken,
 		cfg.GoKeycloak.Realm,

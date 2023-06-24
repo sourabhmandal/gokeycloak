@@ -26,7 +26,7 @@ func SetAuthAdminRealms(url string) func(g *GoKeycloak) {
 
 // URL: {{keycloak_url}}/admin/realms
 // GetServerInfo fetches the server info.
-func (g *GoKeycloak) GetAllRealmsInfo(ctx context.Context, adminAccessToken string) ([]*ServerInfoRepresentation, error) {
+func (g *GoKeycloak) GetAllRealmsInfo(ctx context.Context, adminAccessToken string) (int, []*ServerInfoRepresentation, error) {
 	errMessage := "could not get server info"
 	var result []*ServerInfoRepresentation
 
@@ -35,24 +35,24 @@ func (g *GoKeycloak) GetAllRealmsInfo(ctx context.Context, adminAccessToken stri
 		Get(makeURL(g.basePath, "admin", "realms"))
 
 	if err := checkForError(resp, err, errMessage); err != nil {
-		return nil, err
+		return resp.StatusCode(), nil, err
 	}
 
-	return result, nil
+	return resp.StatusCode(), result, nil
 }
 
 // LogoutAllSessions logs out all sessions of a user given an id.
-func (g *GoKeycloak) LogoutAllSessions(ctx context.Context, adminAccessToken, realm, userID string) error {
+func (g *GoKeycloak) LogoutAllSessions(ctx context.Context, adminAccessToken, realm, userID string) (int, error) {
 	const errMessage = "could not logout"
 
 	resp, err := g.GetRequestWithBearerAuth(ctx, adminAccessToken).
 		Post(g.getAdminRealmURL(realm, "users", userID, "logout"))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
 
 // SendVerifyEmail sends a verification e-mail to a user.
-func (g *GoKeycloak) SendVerifyEmail(ctx context.Context, token, userID, realm string, params ...SendVerificationMailParams) error {
+func (g *GoKeycloak) SendVerifyEmail(ctx context.Context, token, userID, realm string, params ...SendVerificationMailParams) (int, error) {
 	const errMessage = "could not execute actions email"
 
 	queryParams := map[string]string{}
@@ -70,5 +70,5 @@ func (g *GoKeycloak) SendVerifyEmail(ctx context.Context, token, userID, realm s
 		SetQueryParams(queryParams).
 		Put(g.getAdminRealmURL(realm, "users", userID, "send-verify-email"))
 
-	return checkForError(resp, err, errMessage)
+	return resp.StatusCode(), checkForError(resp, err, errMessage)
 }
